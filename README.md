@@ -14,7 +14,52 @@ lvdisplay /dev/vg0/lfs
 ```
 pvs | vgs | lvs
 ```
+3. Создал директорию /mnt/lfs и systemd mount unit для монтирования в эту директорию логического тома lfs
+```
+mkdir /mnt/lfs
+```
+Содержимое юнита для монтирования `/etc/systemd/system/mnt-lfs.mount`:
+```
+Unit]
+Description=/mnt/lfs mount point
 
+[Mount]
+What=/dev/mapper/vg0-lfs
+Where=/mnt/lfs
+Type=ext4
+DirectoryMode=0777
+Options=defaults
+
+
+[Install]
+WantedBy=multi-user.target
+```
+После создания юнита делаем 
+```
+systemctl daemon-reload
+systemctl enable mnt-lfs.mount
+systemctl start mnt-lfs.mount
+systemctl status mnt-lfs.mount
+```
+Проверяем монтирование тома и затем меняем его владельца
+```
+chown vagrant:vagrant /mnt/lfs
+```
+4. Проверяем систему на наличие нужных пакетов для сборки. Для этого запускаем скрипт из книги
+```
+./version-check.sh
+```
+В моем случае пришлось доустановить пакет `texinfo` и изменить ссылку `/bin/sh`, так как она указывала на файл `/bin/dash` вместо `/bin/bash`
+```
+apt install texinfo
+ln -sf /bin/bash /bin/sh
+```
+
+
+
+5. 
+
+6. 
    20  
    21  lvs
    22  fdisk -l
