@@ -14,6 +14,8 @@ lvdisplay /dev/vg0/lfs
 ```
 pvs | vgs | lvs
 ```
+![](lfs-001.jpg)
+
 3. Создал директорию /mnt/lfs и systemd mount unit для монтирования в эту директорию логического тома lfs
 ```
 mkdir /mnt/lfs
