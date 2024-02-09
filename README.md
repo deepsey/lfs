@@ -1,4 +1,6 @@
 ## Linux from scratch
+### Part 01
+
 1. Создал VM на Debian 11 с дополнительным HDD на 40GB
 2. На дополнительном HDD создал LVM-раздел на 20GB и создал на нем ext4
 ``` 
@@ -63,7 +65,48 @@ apt install apt-file
 apt-file update
 apt-file search yacc | grep "yacc$"
 ```
+#### Part 02
+1. Скачиваем необходимые пакеты. Список можно взять отсюда: https://www.linuxfromscratch.org/lfs/downloads/11.1/wget-list
+2. Подсчитаем количество пакетов для скачивания:
+```
+wc -l wget-list
+93 wget-list
+```
+3. Создадим скрипт для скачивания пакетов `wget.sh`:
+```
+#!/bin/bash
+wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
+```
+`--input-file` - файл со списком для закачки
+`--continue` - продолжать закачку приобрыве
+`--directory-prefix` - целевая дитектория для скачиваемых файлов
+4. Создадим целевую директорию
+```
+mkdir sources
+```
+5. Запускаем скрипт `wget.sh` и проверяем количество файлов в директории `$LFS/sources`
+```
+ls -1 $LFS/sources | wc -l
+91
+```
+Видим, что какие-то два файла не скачались. Как нам их найти? Скопируем содержимое директории `$LFS/sources` в файл `local_files` с предварительной сортировкой строк
+```
+ls -1 sources | sort > local_files
+```
+Теперь создадим список файлов, которые мы должны были получить при скачивании из `wget-list`. Для этого воспользуемся командой `awk`
+```
+awk -F"/" '{print $NF}' wget-list | sort > wget_files
+```
+-F"/" - определяем разделитель полей, таким образом мы можем разбить каждую строчку wget-list на отдельные элементы, разделяемые слэшем
+'{print $NF}' - вывести последний ($NF) элемент строки
 
+Весь вывод команды мы перенаправляем в файл `wget_files`, получив в нем отсортированный полный список файлов, которые мы должны были получить. Теперь мы можем сравнить два файла и понять, какие пакеты у нас не скачались:
+```
+diff local_files wget_files
+```
+
+
+6. 
 nano wget-list
    21  wc -l wget-list 
    22  nano wget.sh  
@@ -88,5 +131,5 @@ nano wget-list
    41  ls -1 sources | sort > local_files
    42  wc -l local_files 
    43  diff local_files wget_files
-6. 
+7. 
    
