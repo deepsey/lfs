@@ -104,7 +104,12 @@ awk -F"/" '{print $NF}' wget-list | sort > wget_files
 ```
 diff local_files wget_files
 ```
-
+В итоге не скачалось два архива: zlib-1.2.11.tar.xz и expat-2.4.6.tar.xz. Вместо zlib-1.2.11.tar.xz был скачен zlib-1.3.1.tar.xz, а expat-2.4.6.tar.xz был закачен из другого источника.
+```
+wget https://zlib.net/zlib-1.3.1.tar.xz --continue --directory-prefix=$LFS/sources
+wget https://github.com/libexpat/libexpat/releases/tag/R_2_4_6/expat-2.4.6.tar.xz --continue --directory-prefix=$LFS/sources
+```
+После повтрения процедуры списка необходимых и скаченных файлов убедились, что теперь все необходимые архивы у нас есть.
 
 6. 
 nano wget-list
