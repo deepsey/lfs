@@ -152,30 +152,36 @@ passwd lfs
 usermod -aG sudo lfs
 chown -v lfs $LFS/sources
 ```
-8. 
-nano wget-list
-   21  wc -l wget-list 
-   22  nano wget.sh  
-   23  chmod +x wget.sh 
-   24  mkdir sources
-   25  ./wget.sh 
-   26  ls 1 sources
-   27  ls -1 sources
-   28  ls -1 sources | sort > local_files
-   29  cat local_files 
-   30  awk -F"/" '{print $NF}' wget-list | sort > wget_files
-   31  cat wget_files 
-   32  diff local_files wget_files 
-   33  cat wget-list | grep zlib
-   34  wget https://zlib.net/zlib-1.2.11.tar.xz --continue --directory-prefix=$LFS/sources
-   35  wget https://zlib.net/zlib-1.2.12.tar.xz --continue --directory-prefix=$LFS/sources
-   36  wget https://zlib.net/zlib-1.2.13.tar.xz --continue --directory-prefix=$LFS/sources
-   37  wget https://zlib.net/zlib-1.3.1.tar.xz --continue --directory-prefix=$LFS/sources
-   38  cat wget-list | grep expat
-   39  wget https://github.com/libexpat/libexpat/releases/tag/R_2_4_6/expat-2.4.6.tar.xz --continue --directory-prefix=$LFS/sources
-   40  wc -l sources/
-   41  ls -1 sources | sort > local_files
-   42  wc -l local_files 
-   43  diff local_files wget_files
-9. 
+8. Настраиваем правильное рабочее окружение пользователя lfs.
+В .bash_profile вставляем следующую строку
+```
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+```
+При входе в всистему пользователем lfs обычно считывается логин файл /etc/profile, содержащий несколько настроек и переменных окружения, а затем .bash_profile. Приведенная выше команда заменяет запускаемую по умолчанию оболочку новой с пустым окружением, за исключением переменных HOME, TERM и PS1.
+Новый экземпляр shell является non-login shell, который читает и исполняет содержимое файла .bashrc, а не файлов /etc/profile или.bash_profile.
+Устанавливаем следующее содержимое файла .bashrc
+```
+set +h
+umask 022
+LFS=/mnt/lfs
+LC_ALL=POSIX
+LFS_TGT=$(uname -m)-lfs-linux-gnu
+PATH=/usr/bin
+if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
+PATH=$LFS/tools/bin:$PATH
+CONFIG_SITE=$LFS/usr/share/config.site
+export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+```
+set +h - отклюбчение hash-функции bash
+
+9. И создаем профиль пользователя, предварительно залогинившись от его имени
+```
+source ~/.bash_profile
+```
+
+10. 
+
+11. 
+
+12. 
    
