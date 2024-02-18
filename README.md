@@ -111,7 +111,48 @@ wget https://github.com/libexpat/libexpat/releases/tag/R_2_4_6/expat-2.4.6.tar.x
 ```
 После повтрения процедуры списка необходимых и скаченных файлов убедились, что теперь все необходимые архивы у нас есть.
 
-6. 
+6. Теперь создадим директории для файловой системы LFS. Для этого запускаем скрипт dir.sh
+```
+#!/bin/bash
+mkdir -pv $LFS/{etc,var} $LFS/usr/{bin,lib,sbin}
+for i in bin lib sbin; do
+ln -sv usr/$i $LFS/$i
+done
+case $(uname -m) in
+x86_64) mkdir -pv $LFS/lib64 ;;
+esac
+```
+Дополнительно создаем директорию tools
+```
+mkdir -pv $LFS/tools
+```
+Структура $LFS будет выглядеть так:
+```
+/mnt/lfs
+├── bin -> usr/bin
+├── etc
+├── lib -> usr/lib
+├── lib64
+├── local_files
+├── lost+found [error opening dir]
+├── sbin -> usr/sbin
+├── sources
+├── tools
+├── usr
+│   ├── bin
+│   ├── lib
+│   └── sbin
+├── var
+```
+7. Добавляем пользователя lfs, добавляем его в группу lfs, создаем для него пароль, даем ему права sudo и делаем его владельцем директории $LFS
+```
+groupadd lfs
+useradd -s /bin/bash -g lfs -m -k /dev/null lfs
+passwd lfs
+usermod -aG sudo lfs
+chown -v lfs $LFS/sources
+```
+8. 
 nano wget-list
    21  wc -l wget-list 
    22  nano wget.sh  
@@ -136,5 +177,5 @@ nano wget-list
    41  ls -1 sources | sort > local_files
    42  wc -l local_files 
    43  diff local_files wget_files
-7. 
+9. 
    
