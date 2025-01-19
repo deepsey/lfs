@@ -66,21 +66,25 @@ apt-file update
 apt-file search yacc | grep "yacc$"
 ```
 #### Part 02
-1. Скачиваем необходимые пакеты. Список можно взять отсюда: https://www.linuxfromscratch.org/lfs/downloads/11.1/wget-list
-2. Подсчитаем количество пакетов для скачивания:
+1. Установим для пользователя переменную $LFS. В файл ~/.bashrc пропишем
+```
+export LFS=/mnt/lfs
+```
+2. Скачиваем необходимые пакеты. Список можно взять отсюда: https://www.linuxfromscratch.org/lfs/downloads/11.1/wget-list
+3. Подсчитаем количество пакетов для скачивания:
 ```
 wc -l wget-list
 93 wget-list
 ```
-3. Создадим скрипт для скачивания пакетов `wget.sh`:
+4. Создадим скрипт для скачивания пакетов `wget.sh`:
 ```
 #!/bin/bash
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 ```
 `--input-file` - файл со списком для закачки
 `--continue` - продолжать закачку приобрыве
-`--directory-prefix` - целевая дитектория для скачиваемых файлов
-4. Создадим целевую директорию
+`--directory-prefix` - целевая дитектория для скачиваемых файлов  
+5. Создадим целевую директорию
 ```
 mkdir sources
 ```
