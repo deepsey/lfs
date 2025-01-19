@@ -24,7 +24,7 @@ mkdir /mnt/lfs
 ```
 Содержимое юнита для монтирования `/etc/systemd/system/mnt-lfs.mount`:
 ```
-Unit]
+[Unit]
 Description=/mnt/lfs mount point
 
 [Mount]
