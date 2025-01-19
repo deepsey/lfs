@@ -86,7 +86,7 @@ wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 `--directory-prefix` - целевая дитектория для скачиваемых файлов  
 5. Создадим целевую директорию
 ```
-mkdir sources
+mkdir $LFS/sources
 ```
 5. Запускаем скрипт `wget.sh` и проверяем количество файлов в директории `$LFS/sources`
 ```
