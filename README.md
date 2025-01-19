@@ -7,7 +7,7 @@
 apt install lvm2
 pvcreate /dev/sdb
 vgcreate vg0 /dev/sdb
-lvcreate -L 20G -n lfs vg0
+lvcreate -L 20G -n lfs vg0 / lvcreate -l 100%FREE  -n lfs vg0
 mkfs.ext4 /dev/vg0/lfs
 vgdisplay vg0
 lvdisplay /dev/vg0/lfs
