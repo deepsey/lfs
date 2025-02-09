@@ -1,4 +1,5 @@
 # Linux from scratch
+
 ## <a name='000'>Содержание</a>  
 [PART 01](#01)   
 [PART 02](#02)   
@@ -10,6 +11,7 @@
 [PART 08](#08)   
 [PART 09](#09)   
 [PART 10](#10)   
+
 ---
 
 ##  <a name='01'>PART 01</a> 
