@@ -303,6 +303,8 @@ sys     0m11.603s
 lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?  
 0
 ```
+SBU в нашем случае = 0m23.197s  
+
 Устанавливаем пакет
 ```
 make install -j1  
