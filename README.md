@@ -214,7 +214,13 @@ export LFS LC_ALL LFS_TGT PATH CONFIG_SITE - экспортируем перем
 ```
 chown -R lfs:lfs /home/lfs
 ```
-10. И создаем профиль пользователя, предварительно залогинившись от его имени
+
+10. Если в системе есть файл /etc/bash.bashrc, то его необходимо убрать:
+```
+[ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE
+```
+   
+11. И создаем профиль пользователя, предварительно залогинившись от его имени
 ```
 source ~/.bash_profile
 ```
@@ -223,7 +229,10 @@ source ~/.bash_profile
 ```
 chown -R lfs:lfs /mnt/lfs
 ```
-12.  
+12.  Устанавливаем дополнительные права на папку sources 1777 (стики бит - все пользователи хоста будут иметь право создавать файлы в каталоге sources (но не удалять))
+```
+chmod -v a+wt $LFS/sources
+```
 
 11. 
 
