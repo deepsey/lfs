@@ -295,12 +295,18 @@ cd build
 Проверяем код возврата и наличие Makefile. Mekefile - информация для декларативного языка make, инструкции, что нужно делать утилите make. Т.е. make не компилирует, а просто выполняет команды из этого файла, не более того.  
 Запускаем make и измеряем время его работы. Используем 8 вычислительных потоков для нашей машины
 ```
-time make -j8
-............................
-real    0m23.197s
-user    1m27.901s
-sys     0m11.603s
-lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?
+time make -j8  
+............................  
+real    0m23.197s  
+user    1m27.901s  
+sys     0m11.603s  
+lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?  
+0
+```
+Устанавливаем пакет
+```
+make install -j1  
+lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?  
 0
 ```
 
