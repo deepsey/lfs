@@ -1,15 +1,15 @@
 # Linux from scratch
-## <a name='000'>Содержание</a>
-[PART 01](#01) 
-[PART 02](#02) 
-[PART 03](#03) 
-[PART 04](#04) 
-[PART 05](#05) 
-[PART 06](#06) 
-[PART 07](#07) 
-[PART 08](#08) 
-[PART 09](#09) 
-[PART 10](#10) 
+## <a name='000'>Содержание</a>  
+[PART 01](#01)   
+[PART 02](#02)   
+[PART 03](#03)   
+[PART 04](#04)   
+[PART 05](#05)   
+[PART 06](#06)   
+[PART 07](#07)   
+[PART 08](#08)   
+[PART 09](#09)   
+[PART 10](#10)   
 ---
 
 ##  <a name='01'>PART 01</a> 
@@ -77,6 +77,8 @@ apt install apt-file
 apt-file update
 apt-file search yacc | grep "yacc$"
 ```
+[Содержание](#000) 
+
 ---
 
 ##  <a name='02'>PART 02</a> 
