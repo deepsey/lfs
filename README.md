@@ -311,7 +311,8 @@ make install -j1
 lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?  
 0
 ```
-
+---
+🔷 **GCC-11.2.0 - Pass 1**
 3. 
 
 4. 
