@@ -312,7 +312,11 @@ lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?
 0
 ```
 ---
-🔷 **GCC-11.2.0 - Pass 1**
+🔷 **GCC-11.2.0 - Pass 1**  
+```
+../configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --enable-initfini-array --disable-nls --disable-shared  -disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp  --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
+```
+
 3. 
 
 4. 
