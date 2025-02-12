@@ -336,12 +336,22 @@ case $(uname -m) in
   ;;  
 esac
 ```
-
-
-
-
+Создаем директорию build и переходим в нее
+```
+mkdir -v build
+cd build
+```
+Запускаем configure
 ```
 ../configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --enable-initfini-array --disable-nls --disable-shared  -disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp  --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
+```
+Запускаем make
+```
+time make -j8  
+............................ 
+real    2m57.347s  
+user    15m55.439s  
+sys     1m16.443s
 ```
 
 3. 
