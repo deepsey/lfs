@@ -353,6 +353,14 @@ real    2m57.347s
 user    15m55.439s  
 sys     1m16.443s
 ```
+Устанавливаем пакет
+```
+make install   
+lfs:/mnt/lfs/sources/gcc-11.2.0/build$ echo $?  
+0
+```
+
+
 
 3. 
 
