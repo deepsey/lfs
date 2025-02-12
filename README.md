@@ -367,7 +367,9 @@ cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $($LFS_TGT-gcc -print-lib
 ---
 🔷 **Linux-5.13.12 API Headers**  
 
-
+```
+lfs:/mnt/lfs/sources$ tar xvf linux-5.16.9.tar.xz
+```
 
 
 3. 
