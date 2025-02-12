@@ -313,6 +313,33 @@ lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?
 ```
 ---
 🔷 **GCC-11.2.0 - Pass 1**  
+Распаковываем архив в папке sources
+```
+tar xvf gcc-11.2.0.tar.xz
+````
+Переходим в каталог /mnt/lfs/sources/gcc-11.2.0  
+Устанавливаем дополнительные пакеты  
+```
+tar xvf ../mpfr-4.1.0.tar.xz  
+mv -v mpfr-4.1.0 mpfr  
+tar xvf ../gmp-6.2.1.tar.xz  
+mv -v gmp-6.2.1 gmp  
+tar xvf ../mpc-1.2.1.tar.gz  
+mv -v mpc-1.2.1 mpc
+```
+Устанавливаем по умолчанию имя директории для 64-битных библиотек в "lib" через скрипт tmp.sh
+```
+case $(uname -m) in  
+  x86_64)  
+  sed -e '/m64=/s/lib64/lib/' \  
+  -i.orig gcc/config/i386/t-linux64  
+  ;;  
+esac
+```
+
+
+
+
 ```
 ../configure --target=$LFS_TGT --prefix=$LFS/tools --with-glibc-version=2.11 --with-sysroot=$LFS --with-newlib --without-headers --enable-initfini-array --disable-nls --disable-shared  -disable-multilib --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp  --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
 ```
