@@ -388,8 +388,39 @@ cp -rv usr/include $LFS/usr
 ```
 tar xvf glibc-2.35.tar.xz
 ```
+Создаем необходимые символические ссылки через запуск файла tmp.sh
+```
+case $(uname -m) in
+  i?86) ln -sfv ld-linux.so.2 $LFS/lib/ld-lsb.so.3
+  ;;
+  x86_64) ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64
+  ln -sfv ../lib/ld-linux-x86-64.so.2 $LFS/lib64/ld-lsb-x86-64.so.3
+  ;;
+esac  
+```
+Устанавливаем патч
+```
+patch -Np1 < ../glibc-2.35-fhs-1.patch
+```
+Создаем директорию build и переходим в нее
+```
+mkdir -v build
+cd build
+```
+Выполняем команду, которая задает параметры конфигурации
+```
+echo "rootsbindir=/usr/sbin" > configparms
+```
+Конфигурируем make
+```
+../configure --prefix=/usr --host=$LFS_TGT --build=$(../scripts/config.guess) --enable-kernel=3.2 --with-headers=$LFS/usr/include libc_cv_slibdir=/usr/lib
+```
+Выполняем make
+```
+time make -j8
+.......................................
 
-3. 
+
 
 4. 
    
