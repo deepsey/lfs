@@ -419,6 +419,10 @@ echo "rootsbindir=/usr/sbin" > configparms
 ```
 time make -j8
 .......................................
+real    1m14.629s  
+user    6m8.734s  
+sys     1m22.353s  
+```
 
 
 
