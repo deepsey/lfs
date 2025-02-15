@@ -423,6 +423,29 @@ real    1m14.629s
 user    6m8.734s  
 sys     1m22.353s  
 ```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install   
+lfs:/mnt/lfs/sources/glibc-2.35/build$ echo $?  
+0
+```
+Переменная DESTDIR используется поти всеми пакетами для определения места,Ю куда пакеты будут утсановлены. Если она не определена, то ее значение равно / (root директория).  
+Корректируем файл ldd, который описывает библиотеки
+```
+sed '/RTLDLIST=/s@/usr@@g' -i $LFS/usr/bin/ldd
+```
+Проверяем, работает ли это все
+```
+echo 'int main(){}' > dummy.c  
+$LFS_TGT-gcc dummy.c  
+readelf -l a.out | grep '/ld-linux'  
+    [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+```
+Последнне сообщение говорит о том, что все работает корректно.  
+Удаляем тестовые файлы
+```
+rm -v dummy.c a.out
+```
 
 
 
