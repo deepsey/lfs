@@ -3,7 +3,7 @@
 SBU - Standrad Build Unit, своего рода измерение времени процесса компиляциитой или иной программы. За оценочный параметр берется время компиляции пакета binutils. Именно с него и начинаем компиляцию.  
 
  ## Chapter 5. Compiling a Cross-Toolchain  
-### 🔷 Binutils-2.37  
+### 🔷 Binutils-2.38  
 Распаковываем архив в папке sources
 ```
 tar xvf binutils-2.38.tar.xz
@@ -107,7 +107,7 @@ cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h  
 ```
 ---
-### 🔷 Linux-5.13.12 API Headers
+### 🔷 Linux-5.16.9 API Headers
 Распаковываем ядро и переходим в его каталог
 ```
 lfs:/mnt/lfs/sources$ tar xvf linux-5.16.9.tar.xz
