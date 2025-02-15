@@ -2,7 +2,7 @@
 
 ## <a name='000'>Содержание</a>  
 [PART 01](#01)   
-[PART 02](#02)   
+[PART 02](/../../tree/main/part_02#readme)   
 [PART 03](/../../tree/main/part_03#readme)  
 [PART 04](#04)   
 [PART 05](#05)   
