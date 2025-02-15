@@ -54,7 +54,7 @@ lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?
 0
 ```
 ---
-###🔷 GCC-11.2.0 - Pass 1  
+### 🔷 GCC-11.2.0 - Pass 1  
 Распаковываем архив в папке sources
 ```
 tar xvf gcc-11.2.0.tar.xz
@@ -107,7 +107,7 @@ cd ..
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h > `dirname $($LFS_TGT-gcc -print-libgcc-file-name)`/install-tools/include/limits.h  
 ```
 ---
-🔷 **Linux-5.13.12 API Headers**  
+### 🔷 Linux-5.13.12 API Headers
 Распаковываем ядро и переходим в его каталог
 ```
 lfs:/mnt/lfs/sources$ tar xvf linux-5.16.9.tar.xz
@@ -125,7 +125,7 @@ cp -rv usr/include $LFS/usr
 ```
 Хэдеры готовы.
 
-🔷 **Glibc-2.35**  
+### 🔷 Glibc-2.35
 Распаковываем исходники пакета и переходим в его каталог
 ```
 tar xvf glibc-2.35.tar.xz
@@ -197,7 +197,7 @@ $LFS/tools/libexec/gcc/$LFS_TGT/11.2.0/install-tools/mkheaders
 lfs:/mnt/lfs/sources/glibc-2.35$ rm -rf build/
 ```
 ---
-🔷 **GCC-11.2.0, Pass 1**  
+### 🔷 GCC-11.2.0, Pass 1
 Если каталог /mnt/lfs/sources/gcc-11.2.0 не удалялся, то переходим в него и удаляем каталог build, а затем его заново создаем. Если каталог удалялся, то заново распаковываем архив и создаем в каталоге gcc-11.2.0 папку build
 ```
 mnt/lfs/sources$ tar xvf gcc-11.2.0.tar.xz  
