@@ -180,8 +180,8 @@ cd diffutils-3.8
 ```
 Компилируем пакет
 ```
-time make -j8
-.......................................
+time make -j8  
+.......................................  
 real    0m1.295s  
 user    0m6.030s  
 sys     0m0.956s  
@@ -198,5 +198,48 @@ lfs:/mnt/lfs/sources/diffutils-3.8$ echo $?
 ```
 cd ..  
 rm -rf diffutils-3.8
+```
+---
+### 🔷 File-5.41
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf file-5.41.tar.gz       
+cd file-5.41
+```
+Создаем директорию build
+```
+mkdir -v build
+```
+Собираем файл сигнатуры
+```
+pushd build  
+../configure --disable-bzlib --disable-libseccomp --disable-xzlib --disable-zlib  
+make  
+popd  
+```
+Готовим File для компиляции
+```
+./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess)
+```
+Компилируем пакет
+```
+time make -j8 ILE_COMPILE=$(pwd)/build/src/file  
+.......................................  
+real    0m1.037s  
+user    0m4.348s  
+sys     0m0.551s  
+lfs:/mnt/lfs/sources/file-5.41$ echo $?  
+0
+```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install  
+lfs:/mnt/lfs/sources/file-5.41$ echo $?  
+0
+```
+Удаляем ненужные файлы
+```
+cd ..  
+rm -rf file-5.41
 ```
 ---
