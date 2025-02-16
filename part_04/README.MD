@@ -511,6 +511,91 @@ rm -rf tar-1.34
 ```
 ---
 
+### 🔷 Xz-5.2.5
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf xz-5.2.5.tar.xz            
+cd xz-5.2.5  
+```
+Подготавливаем Xz для компиляции
+```
+./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess) --disable-static --docdir=/usr/share/doc/xz-5.2.5
+```
+Компилируем пакет
+```
+time make -j8  
+.......................................  
+real    0m1.962s
+user    0m8.483s
+sys     0m1.598s
+lfs:/mnt/lfs/sources/xz-5.2.5$ echo $?
+0
+```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install  
+lfs:/mnt/lfs/sources/xz-5.2.5$ echo $?  
+0
+```
+Удаляем ненужные файлы
+```
+cd ..  
+rm -rf xz-5.2.5
+```
+---
+
+### 🔷 Binutils-2.38 - Pass 2
+Распаковываем исходники пакета, переходим в его каталог и устанавливаем патч
+```
+tar xvf binutils-2.38.tar.xz  
+cd binutils-2.38
+patch -Np1 < ../binutils-2.38-lto_fix-1.patch
+```
+Уберем из 6009 строки add_dir в файле ltmain.sh
+```
+sed '6009s/$add_dir//' -i ltmain.sh
+```
+Создаем директорию build и переходим в нее
+```
+mkdir -v build
+cd build
+```
+Подготавливаем Binutils для компиляции
+```
+../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --enable-64-bit-bfd
+```
+---
+--enable-shared - собираем libbfd как разделяемую библиотеку
+--enable-64-bit-bfd - активируем поддержку 64 бит
+---
+Компилируем пакет
+```
+time make -j8  
+.......................................  
+real    0m28.733s
+user    2m0.590s
+sys     0m13.585s
+lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $?
+0
+```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install -j1 
+lfs:/mnt/lfs/sources/binutils-2.38/build$ echo $? 
+0
+```
+Устанавливаем рабочее окружение libctf.so
+```
+install -vm755 libctf/.libs/libctf.so.0.0.0 $LFS/usr/lib
+```
+Удаляем ненужные файлы
+```
+cd ..  
+cd ..
+rm -rf binutils-2.38
+```
+---
+
 
 
 
