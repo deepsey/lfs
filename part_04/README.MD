@@ -32,4 +32,61 @@ lfs:/mnt/lfs/sources/m4-1.4.19$ echo $?
 cd ..  
 rm -rf m4-1.4.19
 ```
+---
+### 🔷 Ncurses-6.3
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf ncurses-6.3.tar.gz  
+cd ncurses-6.3
+```
+Убираем из скрипта configure все упоминания об утилите mawk
+```
+sed -i s/mawk// configure
+```
+Создаем директорию build
+```
+mkdir -v build
+```
+Создаем стэк каталогов
+```
+pushd build
+/mnt/lfs/sources/ncurses-6.3/build /mnt/lfs/sources/ncurses-6.3
+```
+Т.е. теперь при запуске команды popd мы перейдем из одного каталога /mnt/lfs/sources/ncurses-6.3/build в каталог/mnt/lfs/sources/ncurses-6.3  
+Запускаем команды для сборки программы tic и переходим в вышестоящий каталог
+```
+../configure  
+make -C include  
+make -C progs tic  
+popd  
+```
+Готовим ncurces для компиляции
+```
+./configure --prefix=/usr --host=$LFS_TGT --build=$(./config.guess) --mandir=/usr/share/man --with-manpage-format=normal --with-shared --without-debug --without-ada --without-normal --enable-widec
+```
+Комилируем пакет
+```
+time make -j8
+.......................................
+real    0m5.661s  
+user    0m25.875s  
+sys     0m4.104s  
+lfs:/mnt/lfs/sources/ncurses-6.3$ echo $?  
+0
+```
+Устанавливаем пакет с инициализацией переменных
+```
+make DESTDIR=$LFS TIC_PATH=$(pwd)/build/progs/tic install
+lfs:/mnt/lfs/sources/ncurses-6.3$ echo $?
+0
+```
+Записываем параметр "INPUT(-lncursesw)" в библиотеку libncurses.so
+```
+echo "INPUT(-lncursesw)" > $LFS/usr/lib/libncurses.so
+```
+Удаляем ненужные файлы
+```
+cd ..  
+rm -rf ncurses-6.3
 
+```
