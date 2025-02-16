@@ -128,4 +128,75 @@ cd ..
 rm -rf bash-5.1.16
 ```
 ---
+### 🔷 Coreutils-9.0
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf coreutils-9.0.tar.xz   
+cd coreutils-9.0
+```
+Готовим Coreutils для компиляции
+```
+./configure --prefix=/usr --host=$LFS_TGT --build=$(build-aux/config.guess) --enable-install-program=hostname --enable-no-install-program=kill,uptime
+```
+Компилируем пакет
+```
+time make -j8
+.......................................
+real    0m6.064s  
+user    0m38.977s  
+sys     0m5.021s  
+lfs:/mnt/lfs/sources/coreutils-9.0$ echo $?  
+0  
+```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install  
+lfs:/mnt/lfs/sources/coreutils-9.0$ echo $?  
+0
+```
+Создаем страницы руководства, чтобы программы не выдавали ошибок об их отсутствии
+```
+mv -v $LFS/usr/bin/chroot $LFS/usr/sbin  
+mkdir -pv $LFS/usr/share/man/man8  
+mv -v $LFS/usr/share/man/man1/chroot.1 $LFS/usr/share/man/man8/chroot.8  
+sed -i 's/"1"/"8"/' $LFS/usr/share/man/man8/chroot.8  
+```
+Удаляем ненужные файлы
+```
+cd ..  
+rm -rf coreutils-9.0
+```
+---
 
+### 🔷 Diffutils-3.8
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf diffutils-3.8.tar.xz     
+cd diffutils-3.8
+```
+Готовим Diffutils для компиляции
+```
+./configure --prefix=/usr --host=$LFS_TGT
+```
+Компилируем пакет
+```
+time make -j8
+.......................................
+real    0m1.295s  
+user    0m6.030s  
+sys     0m0.956s  
+lfs:/mnt/lfs/sources/diffutils-3.8$ echo $?  
+0
+```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install  
+lfs:/mnt/lfs/sources/diffutils-3.8$ echo $?
+0
+```
+Удаляем ненужные файлы
+```
+cd ..  
+rm -rf diffutils-3.8
+```
+---
