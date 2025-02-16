@@ -596,6 +596,72 @@ rm -rf binutils-2.38
 ```
 ---
 
+### 🔷 GCC-11.2.0 - Pass 2
+Распаковываем архив в папке sources и переходим в папку gcc
+```
+tar xvf gcc-11.2.0.tar.xz
+cd gcc-11.2.0
+````
+Устанавливаем дополнительные пакеты  
+```
+tar -xf ../mpfr-4.1.0.tar.xz
+mv -v mpfr-4.1.0 mpfr
+tar -xf ../gmp-6.2.1.tar.xz
+mv -v gmp-6.2.1 gmp
+tar -xf ../mpc-1.2.1.tar.gz
+mv -v mpc-1.2.1 mpc
+```
+Устанавливаем по умолчанию имя директории для 64-битных библиотек в "lib" через скрипт tmp.sh
+```
+case $(uname -m) in
+   x86_64)
+     sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+   ;;
+esac
+```
+Создаем директорию build и переходим в нее
+```
+mkdir -v build
+cd build
+```
+Создаем симлинки, которые позволяют собрать libgcc с поддержкой потоков posix
+```
+mkdir -pv $LFS_TGT/libgcc  
+ln -s ../../../libgcc/gthr-posix.h $LFS_TGT/libgcc/gthr-default.h
+```
+Подготавливаем GCC для компиляции
+```
+../configure --build=$(../config.guess) --host=$LFS_TGT --prefix=/usr CC_FOR_TARGET=$LFS_TGT-gcc --with-build-sysroot=$LFS --enable-initfini-array --disable-nls --disable-multilib --disable-decimal-float --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-languages=c,c++
+```
+Компилируем пакет
+```
+time make -j8  
+.......................................  
+real    3m15.829s
+user    18m0.297s
+sys     1m20.780s
+lfs:/mnt/lfs/sources/gcc-11.2.0/build$ echo $?
+0
+```
+Устанавливаем пакет с инициализацией переменной DESTDIR=$LFS
+```
+make DESTDIR=$LFS install 
+lfs:/mnt/lfs/sources/gcc-11.2.0/build$ echo $?
+0
+```
+Создаем симлинк
+```
+ln -sv gcc $LFS/usr/bin/cc
+............................  
+'/mnt/lfs/usr/bin/cc' -> 'gcc'
+```
+Удаляем ненужные файлы
+```
+cd ..  
+cd ..
+rm -rf gcc-11.2.0
+```
+---
 
 
 
