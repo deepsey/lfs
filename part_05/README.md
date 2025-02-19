@@ -9,6 +9,27 @@
 export $LFS=/mnt/lfs
 ```
 export - переменная наследуется в дочерние процессы  
+Меняем пользователя каталогов на root
+```
+chown -R root:root $LFS/{usr,lib,var,etc,bin,sbin,tools}
+case $(uname -m) in
+x86_64) chown -R root:root $LFS/lib64 ;;
+esac
+```
+### 🔷 Подготавливаем виртуальные файловые системы
+
+Создаем директории для файловых систем
+```
+mkdir -pv $LFS/{dev,proc,sys,run}
+.................................
+mkdir: created directory '/mnt/lfs/dev'
+mkdir: created directory '/mnt/lfs/proc'
+mkdir: created directory '/mnt/lfs/sys'
+mkdir: created directory '/mnt/lfs/run'
+```
+
+
+
 
 
 
