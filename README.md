@@ -5,7 +5,7 @@
 [PART 02](/../../tree/main/part_02#readme)   
 [PART 03](/../../tree/main/part_03#readme)  
 [PART 04](/../../tree/main/part_04#readme)     
-[PART 05](#05)   
+[PART 05](/../../tree/main/part_05#readme)   
 [PART 06](#06)   
 [PART 07](#07)   
 [PART 08](#08)   
