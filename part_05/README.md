@@ -106,6 +106,97 @@ fi
 ### 🔷 Заходим в окружение chroot
 ```
 chroot "$LFS" /usr/bin/env -i HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/usr/bin:/usr/sbin /bin/bash --login +h
+...............................................................................................................................
+(lfs chroot) I have no name!:/# 
 ```
-/usr/bin/env - устанавливает переменные окружения
+/usr/bin/env - устанавливает переменные окружения  
 PS1='(lfs chroot) - переменная, определяющая строку приглашения
+
+### 🔷 Создаем необходимые директории
+```
+mkdir -pv /etc/{opt,sysconfig}
+mkdir -pv /lib/firmware
+mkdir -pv /media/{floppy,cdrom}
+mkdir -pv /usr/{,local/}{include,src}
+mkdir -pv /usr/local/{bin,lib,sbin}
+mkdir -pv /usr/{,local/}share/{color,dict,doc,info,locale,man}
+mkdir -pv /usr/{,local/}share/{misc,terminfo,zoneinfo}
+mkdir -pv /usr/{,local/}share/man/man{1..8}
+mkdir -pv /var/{cache,local,log,mail,opt,spool}
+mkdir -pv /var/lib/{color,misc,locate}
+
+ln -sfv /run /var/run
+ln -sfv /run/lock /var/lock
+
+install -dv -m 0750 /root
+install -dv -m 1777 /tmp /var/tmp
+```
+Команда install создает директорию и сразу дает ей нужные права для каталога /root, а в лучае с каталогом /tmp копирует его содержимое в /var/tmp и создает необходимые права.
+
+### 🔷 Создаем необходимые файлы и симлинки
+Исторически Linux содержит список монтируемых файловых систем в /etc/mtab. Современные ядра хранят этот список во внутренних структурах и делают его доступным для пользователя через файловую систему /proc. Для удовлетворения зависимостей создадим линк
+```
+ln -sv /proc/self/mounts /etc/mtab
+```
+Создадим файл /etc/hosts
+```
+cat > /etc/hosts << EOF
+127.0.0.1 localhost $(hostname)
+::1 localhost
+EOF
+```
+Для логина пользователя root и распознавания его имени добавим необходимые параметры в файлы /etc/passwd и /etc/group.
+Создаем /etc/passwd
+```
+cat > /etc/passwd << "EOF"
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/dev/null:/bin/false
+daemon:x:6:6:Daemon User:/dev/null:/bin/false
+messagebus:x:18:18:D-Bus Message Daemon User:/run/dbus:/bin/false
+uuidd:x:80:80:UUID Generation Daemon User:/dev/null:/bin/false
+nobody:x:99:99:Unprivileged User:/dev/null:/bin/false
+EOF
+```
+Создаем /etc/group
+```
+cat > /etc/group << "EOF"
+root:x:0:
+bin:x:1:daemon
+sys:x:2:
+kmem:x:3:
+tape:x:4:
+tty:x:5:
+daemon:x:6:
+floppy:x:7:
+disk:x:8:
+lp:x:9:
+dialout:x:10:
+audio:x:11:
+video:x:12:
+utmp:x:13:
+usb:x:14:
+cdrom:x:15:
+adm:x:16:
+messagebus:x:18:
+input:x:24:
+mail:x:34:
+kvm:x:61:
+uuidd:x:80:
+wheel:x:97:
+nogroup:x:99:
+users:x:999:
+EOF
+```
+Некоторые тесты в дальнейшем требуют наличия регулярного пользователя. Создадим его, а в дальнейше, когда необходимость в нем пропадет, удалим.
+```
+echo "tester:x:101:101::/home/tester:/bin/bash" >> /etc/passwd
+echo "tester:x:101:" >> /etc/group
+install -o tester -d /home/tester
+```
+Для того, чтобы убрать строку "I have no name!", перезапускаем оболочку
+```
+exec /bin/bash --login +h
+```
+Директива +h заставляет bash использовать внутренние пути для хэширования. Без этой директивы bash запоминает пути до ранее выполненных бинарников.
+
+
