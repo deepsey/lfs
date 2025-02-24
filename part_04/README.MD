@@ -536,8 +536,8 @@ mkdir -v build && cd build
 ../configure --prefix=/usr --build=$(../config.guess) --host=$LFS_TGT --disable-nls --enable-shared --disable-werror --enable-64-bit-bfd
 ```
 ---
---enable-shared - собираем libbfd как разделяемую библиотеку
---enable-64-bit-bfd - активируем поддержку 64 бит
+ --enable-shared - собираем libbfd как разделяемую библиотеку  
+ --enable-64-bit-bfd - активируем поддержку 64 бит
 ---
 
 Компилируем пакет
