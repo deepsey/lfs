@@ -226,4 +226,7 @@ lfs:/mnt/lfs/sources/gcc-11.2.0/build$ echo $?
 ```
 make DESTDIR=$LFS install
 ```
-
+```
+lfs:/mnt/lfs/sources/gcc-11.2.0/build$ echo $?
+0
+```
