@@ -213,9 +213,16 @@ cd build
 ```
 Выполняем make
 ```
-make -j8
+time make -j8
 ```
-Устанавливаем библиотеку с инициализацией переменной DESTDIR=$LFS
+```
+real    0m7.577s
+user    0m30.290s
+sys     0m3.524s
+lfs:/mnt/lfs/sources/gcc-11.2.0/build$ echo $?
+0
+```
+Устанавливаем GCC-11.2.0 с инициализацией переменной DESTDIR=$LFS
 ```
 make DESTDIR=$LFS install
 ```
