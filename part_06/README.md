@@ -111,6 +111,39 @@ cd .. && rm -rf bison-3.8.2
 ```
 ---
 
+### 🔷 Perl-5.34.0 
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf perl-5.34.0.tar.xz && cd perl-5.34.0
+```
+Готовим Perl для компиляции
+```
+sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dprivlib=/usr/lib/perl5/5.34/core_perl -Darchlib=/usr/lib/perl5/5.34/core_perl -Dsitelib=/usr/lib/perl5/5.34/site_perl -Dsitearch=/usr/lib/perl5/5.34/site_perl -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl
+```
+des - комбинация их трех опций: -d - использовать параметры по умолчанию (defaults) для всех компонентов, -e (ensure) - убедиться в выполеннии всех задач, -s (silences) - не выводить несущественные сообщения  
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m22.391s
+user    1m58.395s
+sys     0m8.059s
+```
+Устанавливаем пакет
+```
+make install
+```
+```
+(lfs chroot) root:/sources/perl-5.34.0# echo $?
+0
+```
+Удаляем ненужные файлы
+```
+cd .. && rm -rf perl-5.34.0
+```
+---
+
 
 
 
