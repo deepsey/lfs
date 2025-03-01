@@ -216,3 +216,40 @@ cd .. && rm -rf texinfo-6.8
 ```
 ---
 
+### 🔷 Util-linux-2.37.4
+Распаковываем исходники пакета и переходим в его каталог
+```
+tar xvf util-linux-2.37.4.tar.xz && cd util-linux-2.37.4
+```
+FHS рекомендует использовать директорию /var/lib/hwclock вместо /etc для размещения файла adjtime
+```
+mkdir -pv /var/lib/hwclock
+```
+Готовим Util-linux для компиляции
+```
+./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --libdir=/usr/lib --docdir=/usr/share/doc/util-linux-2.37.2 --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python  runstatedir=/run
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m9.171s
+user    0m57.860s
+sys     0m6.677s
+(lfs chroot) root:/sources/util-linux-2.37.4# echo $?
+0
+```
+Устанавливаем пакет
+```
+make install
+```
+```
+(lfs chroot) root:/sources/util-linux-2.37.4# echo $?
+0
+```
+Удаляем ненужные файлы
+```
+cd .. && rm -rf util-linux-2.37.4  
+```
+---
