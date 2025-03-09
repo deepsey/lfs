@@ -163,5 +163,75 @@ localedef -i ja_JP -f SHIFT_JIS ja_JP.SJIS 2> /dev/null || true
 ---
 
 ### 🔷 Конфигурирование Glibc
+#### Добавляем nsswitch.conf
+```
+cat > /etc/nsswitch.conf << "EOF"
+# Begin /etc/nsswitch.conf
+
+passwd: files
+group: files
+shadow: files
+
+hosts: files dns
+networks: files
+
+protocols: files
+services: files
+ethers: files
+rpc: files
+
+# End /etc/nsswitch.conf
+EOF
+```
+#### Добавляем time zone data
+Устанавливаем и настраиваем time zone data следующим образом
+```
+tar -xf ../../tzdata2021e.tar.gz
+
+ZONEINFO=/usr/share/zoneinfo
+mkdir -pv $ZONEINFO/{posix,right}
+
+for tz in etcetera southamerica northamerica europe africa antarctica  \
+          asia australasia backward; do
+    zic -L /dev/null   -d $ZONEINFO       ${tz}
+    zic -L /dev/null   -d $ZONEINFO/posix ${tz}
+    zic -L leapseconds -d $ZONEINFO/right ${tz}
+done
+
+cp -v zone.tab zone1970.tab iso3166.tab $ZONEINFO
+zic -d $ZONEINFO -p America/New_York
+unset ZONEINFO
+```
+Определяем нужную нам временную зону
+```
+tzselect
+```
+Для нашего региона была выбрана зона Europe/Moscow.  
+Далее создаем файл /etc/localtime
+```
+ln -sfv /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+```
+#### Конфигурируем Dynamic Loader
+Настраиваем файл, отвечающий за информацию, где хранятся наши библиотеки.  
+Создаем новый файл /etc/ld.so.conf 
+```
+cat > /etc/ld.so.conf << "EOF"
+# Begin /etc/ld.so.conf
+/usr/local/lib
+/opt/lib
+
+EOF
+```
+Если мы хотим формировать собственные дополнительные файлы, то мы можем прописывать путь до них в /etc/ld.so.conf.d в файл *.conf. Для этого прописываем директорию
+```
+cat >> /etc/ld.so.conf << "EOF"
+# Add an include directory
+include /etc/ld.so.conf.d/*.conf
+
+EOF
+mkdir -pv /etc/ld.so.conf.d
+```
+
+
 
 
