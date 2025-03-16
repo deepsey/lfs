@@ -824,6 +824,148 @@ cd .. && rm -rf expect5.45.4
 ```
 ---
 
+### 🔷 DejaGNU-1.6.3
+Распаковываем исходники и переходим в папку с пакетом
+```
+tar xvf dejagnu-1.6.3.tar.gz && cd dejagnu-1.6.3
+```
+Создаем папку build и переходим в нее
+```
+mkdir -v build && cd build
+```
+Готовим DejaGNU для компиляции
+```
+../configure --prefix=/usr
+```
+```
+makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
+```
+```
+makeinfo --plaintext -o doc/dejagnu.txt  ../doc/dejagnu.texi
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m0.004s
+user    0m0.004s
+sys     0m0.000s
+(lfs chroot) root:/sources/dejagnu-1.6.3/build# echo $?
+0
+```
+Запускаем тесты
+```
+time make -j8 test
+```
+```
+real    0m13.062s
+user    0m0.045s
+sys     0m0.007s
+(lfs chroot) root:/sources/expect5.45.4# echo $?
+0
+```
+Устанавливаем пакет
+```
+install -v -dm755 /usr/share/doc/dejagnu-1.6.3
+```
+```
+install -v -m644 doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-1.6.3
+```
+```
+(lfs chroot) root:/sources/expect5.45.4# echo $?
+0
+```
+```
+ln -svf expect5.45.4/libexpect5.45.4.so /usr/lib
+```
+Запускаем тесты
+```
+time make -j8 check
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && cd .. && rm -rf dejagnu-1.6.3
+```
+---
+
+### 🔷 Binutils-2.38
+Распаковываем исходники и переходим в папку с пакетом
+```
+tar xvf binutils-2.38.tar.xz && cd binutils-2.38
+```
+Проверяем, что PTY работают внутри окружения chroot
+```
+expect -c "spawn ls"
+```
+Устанавливаем патч
+```
+patch -Np1 -i ../binutils-2.38-lto_fix-1.patch
+```
+```
+sed -e '/R_386_TLS_LE /i \   || (TYPE) == R_386_TLS_IE \\' -i ./bfd/elfxx-x86.h
+```
+Создаем папку build и переходим в нее
+```
+mkdir -v build && cd build
+```
+Готовим Binutils для компиляции
+```
+../configure --prefix=/usr --enable-gold --enable-ld=default --enable-plugins --enable-shared --disable-werror --enable-64-bit-bfd --with-system-zlib
+```
+Компилируем пакет
+```
+time make -j8 tooldir=/usr
+```
+```
+real    1m8.624s
+user    6m16.369s
+sys     0m27.457s
+(lfs chroot) root:/sources/binutils-2.38/build# echo $?
+0
+```
+Запускаем тесты
+```
+time make -j8 -k check
+```
+```
+============================================================================
+Testsuite summary for gold 0.1
+============================================================================
+# TOTAL: 4
+# PASS:  4
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+```
+real    0m13.728s
+user    1m1.003s
+sys     0m9.795s
+```
+Устанавливаем пакет
+```
+make tooldir=/usr install
+```
+```
+(lfs chroot) root:/sources/binutils-2.38/build# echo $?
+0
+```
+Удаляем ненужные статические библиотеки
+```
+rm -fv /usr/lib/lib{bfd,ctf,ctf-nobfd,opcodes}.a
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && cd .. && rm -rf binutils-2.38
+```
+---
+
+
+
 
 
 
