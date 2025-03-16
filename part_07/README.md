@@ -350,67 +350,54 @@ cd .. && rm -rf bzip2-1.0.8
 ```
 ---
 
-### 🔷 Bzip2-1.0.8
+### 🔷 Xz-5.2.5
 
 Распаковываем исходники и переходим в папку с пакетом
 ```
-tar xvf bzip2-1.0.8.tar.gz && cd bzip2-1.0.8
+tar xvf xz-5.2.5.tar.xz && cd xz-5.2.5
 ```
-Применяем патч с документаций для этого пакета
+Готовим Xz для компиляции
 ```
-patch -Np1 -i ../bzip2-1.0.8-install_docs-1.patch
-```
-Выполняем команду для правильной установки симлинков
-```
-sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
-```
-Убеждаемся, что страницы руководства установлены в правильную локацию
-```
-sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
-```
-Готовим Bzip2 для компиляции
-```
-make -f Makefile-libbz2_so
-make clean
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/xz-5.2.5
 ```
 Компилируем пакет и тестируем пакет
 ```
 time make -j8
 ```
 ```
-real    0m0.818s
-user    0m2.048s
-sys     0m0.140s
-(lfs chroot) root:/sources/bzip2-1.0.8# echo $?
+real    0m1.928s
+user    0m8.224s
+sys     0m1.527s
+(lfs chroot) root:/sources/xz-5.2.5# echo $?
 0
 ```
-Устанавливаем программы
+Запускаем тесты
 ```
-make PREFIX=/usr install
+time make -j8 check
+```
+==================
+All 9 tests passed
+==================
+make[2]: Leaving directory '/sources/xz-5.2.5/tests'
+make[1]: Leaving directory '/sources/xz-5.2.5/tests'
+make[1]: Entering directory '/sources/xz-5.2.5'
+make[1]: Leaving directory '/sources/xz-5.2.5'
+
+real    0m3.602s
+user    0m4.240s
+sys     0m0.632s
+```
+Устанавливаем пакет
+```
+make install
 ```
 ```
-(lfs chroot) root:/sources/bzip2-1.0.8# echo $?                 
+(lfs chroot) root:/sources/xz-5.2.5# echo $?
 0
-```
-Устанавливаем разделяемую библиотеку
-```
-cp -av libbz2.so.* /usr/lib
-ln -sv libbz2.so.1.0.8 /usr/lib/libbz2.so
-```
-Устанавливаем разделеляемый бинарник bzip2 в директорию /usr/bin, и удаляем две копии bzip2 при помощи симлинков
-```
-cp -v bzip2-shared /usr/bin/bzip2
-```
-```
-for i in /usr/bin/{bzcat,bunzip2}; do ln -sfv bzip2 $i; done
-```
-Удаляем ненужную статическую библиотеку
-```
-rm -fv /usr/lib/libbz2.a
 ```
 Удаляем исходные файлы пакета из source
 ```
-cd .. && rm -rf bzip2-1.0.8
+cd .. && rm -rf xz-5.2.5
 ```
 ---
 
