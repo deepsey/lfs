@@ -478,6 +478,52 @@ cd .. && rm -rf file-5.41
 ```
 ---
 
+### 🔷 Readline-8.1.2
+Распаковываем исходники и переходим в папку с пакетом
+```
+tar xvf readline-8.1.2.tar.gz && cd readline-8.1.2
+```
+Для того, чтобы при переустановке readline не переименовывались страые библиотеки, запускаем
+```
+sed -i '/MV.*old/d' Makefile.in
+```
+```
+sed -i '/{OLDSUFF}/c:' support/shlib-install
+```
+Готовим Readline для компиляции
+```
+./configure --prefix=/usr --disable-static --with-curses --docdir=/usr/share/doc/readline-8.1.2
+```
+Компилируем пакет
+```
+time make -j8 SHLIB_LIBS="-lncursesw"
+```
+```
+real    0m0.755s
+user    0m4.366s
+sys     0m0.352s
+(lfs chroot) root:/sources/readline-8.1.2# echo $?
+0
+```
+Устанавливаем пакет
+```
+make SHLIB_LIBS="-lncursesw" install
+```
+```
+(lfs chroot) root:/sources/readline-8.1.2# echo $?
+0
+```
+Устанавливаем документацию
+```
+install -v -m644 doc/*.{ps,pdf,html,dvi} /usr/share/doc/readline-8.1.2
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && rm -rf readline-8.1.2
+```
+---
+
+
 
 
 
