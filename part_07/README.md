@@ -375,6 +375,7 @@ sys     0m1.527s
 ```
 time make -j8 check
 ```
+```
 ==================
 All 9 tests passed
 ==================
