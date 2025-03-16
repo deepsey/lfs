@@ -690,6 +690,139 @@ cd .. && rm -rf flex-2.6.4
 ```
 ---
 
+### 🔷 Tcl-8.6.12
+Распаковываем исходники и переходим в папку с пакетом
+```
+tar xvf tcl8.6.12-src.tar.gz && cd tcl8.6.12
+```
+Распаковываем документацию
+```
+tar -xf ../tcl8.6.12-html.tar.gz --strip-components=1
+```
+Готовим Tcl для компиляции
+```
+SRCDIR=$(pwd) && cd unix
+```
+```
+./configure --prefix=/usr --mandir=/usr/share/man $([ "$(uname -m)" = x86_64 ] && echo --enable-64bit)
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m39.463s
+user    1m8.002s
+sys     0m4.414s
+(lfs chroot) root:/sources/tcl8.6.12/unix# echo $?
+0
+```
+```
+sed -e "s|$SRCDIR/unix|/usr/lib|" -e "s|$SRCDIR|/usr/include|" -i tclConfig.sh
+```
+```
+sed -e "s|$SRCDIR/unix/pkgs/tdbc1.1.3|/usr/lib/tdbc1.1.3|" -e "s|$SRCDIR/pkgs/tdbc1.1.3/generic|/usr/include|" -e "s|$SRCDIR/pkgs/tdbc1.1.3/library|/usr/lib/tcl8.6|" -e "s|$SRCDIR/pkgs/tdbc1.1.3|/usr/include|" -i pkgs/tdbc1.1.3/tdbcConfig.sh
+```
+```
+sed -e "s|$SRCDIR/unix/pkgs/itcl4.2.2|/usr/lib/itcl4.2.2|" -e "s|$SRCDIR/pkgs/itcl4.2.2/generic|/usr/include|" -e "s|$SRCDIR/pkgs/itcl4.2.2|/usr/include|" -i pkgs/itcl4.2.2/itclConfig.sh
+```
+```
+unset SRCDIR
+```
+Запускаем тесты
+```
+time make -j8 test
+```
+```
+real    3m53.757s
+user    0m28.397s
+sys     0m6.988s
+(lfs chroot) root:/sources/tcl8.6.12/unix# echo $?     
+0
+```
+Устанавливаем пакет
+```
+make install
+```
+```
+(lfs chroot) root:/sources/tcl8.6.12/unix# echo $?
+0
+```
+```
+chmod -v u+w /usr/lib/libtcl8.6.so
+```
+Устанавливаем Tcl заголовки
+```
+make install-private-headers
+```
+Создаем необходимый симлинк
+```
+ln -sfv tclsh8.6 /usr/bin/tclsh
+```
+Переименовываем страницу руководства, которая конфликтует со страницей руководства Perl
+```
+mv /usr/share/man/man3/{Thread,Tcl_Thread}.3
+```
+Устанавливаем загруженную документацию
+```
+mkdir -v -p /usr/share/doc/tcl-8.6.12
+```
+```
+cp -v -r  ../html/* /usr/share/doc/tcl-8.6.12
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && cd .. && rm -rf tcl8.6.12
+```
+---
+
+### 🔷 Expect-5.45.4
+Распаковываем исходники и переходим в папку с пакетом
+```
+tar xvf expect5.45.4.tar.gz && cd expect5.45.4
+```
+Готовим Expect для компиляции
+```
+./configure --prefix=/usr --with-tcl=/usr/lib --enable-shared --mandir=/usr/share/man --with-tclinclude=/usr/include
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m0.500s
+user    0m2.484s
+sys     0m0.240s
+(lfs chroot) root:/sources/expect5.45.4# echo $?
+0
+```
+Запускаем тесты
+```
+time make -j8 test
+```
+```
+real    0m13.062s
+user    0m0.045s
+sys     0m0.007s
+(lfs chroot) root:/sources/expect5.45.4# echo $?
+0
+```
+Устанавливаем пакет
+```
+make install
+```
+```
+(lfs chroot) root:/sources/expect5.45.4# echo $?
+0
+```
+```
+ln -svf expect5.45.4/libexpect5.45.4.so /usr/lib
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && rm -rf expect5.45.4
+```
+---
 
 
 
