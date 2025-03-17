@@ -1208,6 +1208,7 @@ tar xvf acl-2.3.1.tar.xz && cd acl-2.3.1
 Готовим Acl для компиляции
 ```
 ./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/acl-2.3.1
+```
 Компилируем пакет
 ```
 time make -j8
