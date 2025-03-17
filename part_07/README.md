@@ -992,6 +992,7 @@ make html
 ```
 time make -j8 check 2>&1 | tee gmp-check-log
 ```
+```
 real    0m11.209s
 user    0m56.364s
 sys     0m5.487s
