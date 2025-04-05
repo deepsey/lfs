@@ -1279,6 +1279,79 @@ cd .. && rm -rf libcap-2.63
 ```
 ---
 
+### 🔷 Shadow-4.11.1
+Распаковываем исходники и переходим в папку с пакетом
+```
+tar xvf shadow-4.11.1.tar.xz && cd shadow-4.11.1
+```
+Отключаем установку программы groups и ее man страниц, так как Coreutils обеспечивает версию лучше. Также отключаем установку man страниц, которые уже были установлены ранее.
+```
+sed -i 's/groups$(EXEEXT) //' src/Makefile.in
+find man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;
+find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
+find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \;
+```
+Instead of using the default crypt method, use the more secure SHA-512 method of password encryption, which also allows passwords longer than 8 characters. It is also necessary to change the obsolete /var/spool/mail location for user mailboxes that Shadow uses by default to the /var/mail location used currently. And, get rid of /bin and /sbin from PATH, since they are simply symlinks to their counterpart in /usr.
+Вместо использования криптографического метода, предоставляемого по умолчанию, ворспользуемся болле эффектиынм SHA-512 для шифрования паролей, который также разрешает пароли длиннее 8 символов. 
+```
+sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD SHA512:' -e 's:/var/spool/mail:/var/mail:' -e '/PATH=/{s@/sbin:@@;s@/bin:@@}' -i etc/login.defs
+```
+Готовим Shadow для компиляции
+```
+touch /usr/bin/passwd
+```
+```
+./configure --sysconfdir=/etc --disable-static --with-group-name-max-length=32
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m2.197s
+user    0m11.442s
+sys     0m1.859s
+(lfs chroot) root:/sources/shadow-4.11.1# echo $?
+0
+```
+Устанавливаем пакет
+```
+make exec_prefix=/usr install
+```
+```
+(lfs chroot) root:/sources/shadow-4.11.1# echo $?
+0
+```
+```
+make -C man install-man
+```
+```
+(lfs chroot) root:/sources/shadow-4.11.1# echo $?
+0
+```
+Конфигурируем Shadow.
+Для включения теневых паролей запускаем
+```
+pwconv
+```
+Для включения теневых групп паролей запускаем
+```
+grpconv
+```
+Меняем параметры по умолчанию
+```
+mkdir -p /etc/default
+useradd -D --gid 999
+```
+Устанавливаем пароль root
+```
+passwd root
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && rm -rf shadow-4.11.1
+```
+---
 
 
 
