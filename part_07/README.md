@@ -1358,48 +1358,116 @@ cd .. && rm -rf shadow-4.11.1
 ```
 tar xvf gcc-11.2.0.tar.xz && cd gcc-11.2.0
 ```
-Отключаем установку программы groups и ее man страниц, так как Coreutils обеспечивает версию лучше. Также отключаем установку man страниц, которые уже были установлены ранее.
+Исправляем проблему поломки libasan.a, сбилдив этот пакет при помощи Glibc-2.34 или более поздней:
 ```
-sed -i 's/groups$(EXEEXT) //' src/Makefile.in
-find man -name Makefile.in -exec sed -i 's/groups\.1 / /'   {} \;
-find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \;
-find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \;
+sed -e '/static.*SIGSTKSZ/d' -e 's/return kAltStackSize/return SIGSTKSZ * 4/' -i libsanitizer/sanitizer_common/sanitizer_posix_libcdep.cpp
 ```
-Instead of using the default crypt method, use the more secure SHA-512 method of password encryption, which also allows passwords longer than 8 characters. It is also necessary to change the obsolete /var/spool/mail location for user mailboxes that Shadow uses by default to the /var/mail location used currently. And, get rid of /bin and /sbin from PATH, since they are simply symlinks to their counterpart in /usr.
-Вместо использования криптографического метода, предоставляемого по умолчанию, ворспользуемся болле эффектиынм SHA-512 для шифрования паролей, который также разрешает пароли длиннее 8 символов. 
+Если собираем в системе x86_64, то меняем наименовние директории для 64-х битных библиотек на “lib”
 ```
-sed -e 's:#ENCRYPT_METHOD DES:ENCRYPT_METHOD SHA512:' -e 's:/var/spool/mail:/var/mail:' -e '/PATH=/{s@/sbin:@@;s@/bin:@@}' -i etc/login.defs
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
 ```
-Готовим Shadow для компиляции
+The GCC documentation recommends building GCC in a dedicated build directory:
+Сборку GCC рекомендуется проводить в специальной директории build
 ```
-touch /usr/bin/passwd
+mkdir -v build && cd build
 ```
+Готовим GCC для компиляции
 ```
-./configure --sysconfdir=/etc --disable-static --with-group-name-max-length=32
+../configure --prefix=/usr LD=ld --enable-languages=c,c++ --disable-multilib --disable-bootstrap --with-system-zlib
 ```
 Компилируем пакет
 ```
 time make -j8
 ```
 ```
-real    0m2.197s
-user    0m11.442s
-sys     0m1.859s
-(lfs chroot) root:/sources/shadow-4.11.1# echo $?
+real    4m15.907s
+user    20m2.298s
+sys     1m28.510s
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
 0
 ```
-Устанавливаем пакет
+Запускаем тесты.
+Увеличиваем размер стека для запуска етстов
 ```
-make exec_prefix=/usr install
+ulimit -s 32768
+```
+Тесты запускаем от непривилегированного пользователя
+```
+chown -Rv tester .
 ```
 ```
-(lfs chroot) root:/sources/shadow-4.11.1# echo $?
+su tester -c "PATH=$PATH make -k -j8 check"
+```
+Устанавливаем пакет и удаляем ненужные директории
+```
+make install
+```
+```
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
 0
 ```
 ```
-make -C man install-man
+rm -rf /usr/lib/gcc/$(gcc -dumpmachine)/11.2.0/include-fixed/bits/
+```
+Меняем владельца директорий на root:root для корректной работы
+```
+chown -v -R root:root /usr/lib/gcc/*linux-gnu/11.2.0/include{,-fixed}
+```
+Создаем симлинк, необходимый по исторически сложившейся структкре FHS
+```
+ln -svr /usr/bin/cpp /usr/lib
+```
+Добавляем совместимый симлинк для включения сборочных программ при помощи Link Time Optimization (LTO)
+```
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/11.2.0/liblto_plugin.so /usr/lib/bfd-plugins/
+```
+Теперь, когда финальный набор инструментов находится на своем месте, важно еще раз убедиться, чт о компиляция и линковка работают так, как одидается. Запускаем для этого несколько тестов на отсутствие тривиальных ошибок
+```
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
 ```
 ```
+      [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
+0
+```
+Ошибок быть не должно, и вывод последней команды должен пбыть примерно таким (в зависимости от платформы может отличаться имя линкера)
+```
+[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+```
+Теперь убедимся, что мы установили для использования корректные стартовые файлы
+```
+grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+```
+```
+/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crt1.o succeeded
+/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crti.o succeeded
+/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crtn.o succeeded
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
+0
+```
+Вывод последней команды должен быть как указано выше.
+Проверяем, что компилятор ищет корректные заголовочные файлы
+```
+ /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include
+ /usr/local/include
+ /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed
+ /usr/include
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
+0
+```
+Вывод команды должен быть как указано выше
+
+
+
+
+
+
 (lfs chroot) root:/sources/shadow-4.11.1# echo $?
 0
 ```
