@@ -1451,7 +1451,7 @@ grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
 (lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
 0
 ```
-Вывод последней команды должен быть как указано выше.
+Вывод последней команды должен быть как указано выше.  
 Проверяем, что компилятор ищет корректные заголовочные файлы
 ```
  /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include
@@ -1462,36 +1462,55 @@ grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
 0
 ```
 Вывод команды должен быть как указано выше
-
-
-
-
-
-
-(lfs chroot) root:/sources/shadow-4.11.1# echo $?
+Далее проверяем, что новый линкер используется с корректными путями поиска
+```
+grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+```
+```
+SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib64")
+SEARCH_DIR("/usr/local/lib64")
+SEARCH_DIR("/lib64")
+SEARCH_DIR("/usr/lib64")
+SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib")
+SEARCH_DIR("/usr/local/lib")
+SEARCH_DIR("/lib")
+SEARCH_DIR("/usr/lib");
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
 0
 ```
-Конфигурируем Shadow.
-Для включения теневых паролей запускаем
+Вывод должен быть примерно как выше.  
+Далее проверяем, правильную ли libc мы используем
 ```
-pwconv
+grep "/lib.*/libc.so.6 " dummy.log
 ```
-Для включения теневых групп паролей запускаем
 ```
-grpconv
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
+0
 ```
-Меняем параметры по умолчанию
+Убеждаемся, что GCC использует правильный динамический линкер
 ```
-mkdir -p /etc/default
-useradd -D --gid 999
+grep found dummy.log
 ```
-Устанавливаем пароль root
 ```
-passwd root
+found ld-linux-x86-64.so.2 at /usr/lib/ld-linux-x86-64.so.2
+(lfs chroot) root:/sources/gcc-11.2.0/build# echo $?
+0
+```
+Для платформы x86-64 вывод должен быть как указано выше.  
+Убедившись, что все работет корректно, очищаем тестовые файлы
+```
+rm -v dummy.c a.out dummy.log
+```
+Перемещаем несоответсвующие файлы
+```
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
+```
+```
+mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
 ```
 Удаляем исходные файлы пакета из source
 ```
-cd .. && rm -rf shadow-4.11.1
+cd .. && cd .. && rm -rf gcc-11.2.0
 ```
 ---
 
