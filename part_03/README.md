@@ -199,7 +199,7 @@ lfs:/mnt/lfs/sources/glibc-2.35$ rm -rf build/
 ```
 ---
 
-### 🔷 GCC-11.2.0, Pass 1
+### 🔷 Libstdc++ from GCC-11.2.0, Pass 1
 Если каталог /mnt/lfs/sources/gcc-11.2.0 не удалялся, то переходим в него и удаляем каталог build, а затем его заново создаем. Если каталог удалялся, то заново распаковываем архив и создаем в каталоге gcc-11.2.0 папку build
 ```
 mnt/lfs/sources$ tar xvf gcc-11.2.0.tar.xz  
