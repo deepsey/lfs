@@ -86,9 +86,7 @@ file1  file10  file2  file3  file4  file5  file6  file7  file8  file9
 ```
 Видим исходное содержимое папки /bind. 
 
----  
-
-  
+---
 Связываем каталог хостовой системы /dev с каталогом /$LFS/dev
 ```
 mount -v --bind /dev $LFS/dev
