@@ -843,29 +843,10 @@ makeinfo --html --no-split -o doc/dejagnu.html ../doc/dejagnu.texi
 ```
 makeinfo --plaintext -o doc/dejagnu.txt  ../doc/dejagnu.texi
 ```
-Компилируем пакет
+Собираем и устанавливаем пакет
 ```
-time make -j8
+make install
 ```
-```
-real    0m0.004s
-user    0m0.004s
-sys     0m0.000s
-(lfs chroot) root:/sources/dejagnu-1.6.3/build# echo $?
-0
-```
-Запускаем тесты
-```
-time make -j8 test
-```
-```
-real    0m13.062s
-user    0m0.045s
-sys     0m0.007s
-(lfs chroot) root:/sources/expect5.45.4# echo $?
-0
-```
-Устанавливаем пакет
 ```
 install -v -dm755 /usr/share/doc/dejagnu-1.6.3
 ```
@@ -875,9 +856,6 @@ install -v -m644 doc/dejagnu.{html,txt} /usr/share/doc/dejagnu-1.6.3
 ```
 (lfs chroot) root:/sources/expect5.45.4# echo $?
 0
-```
-```
-ln -svf expect5.45.4/libexpect5.45.4.so /usr/lib
 ```
 Запускаем тесты
 ```
