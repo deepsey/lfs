@@ -1927,17 +1927,16 @@ cd .. && rm -rf bash-5.1.16
 
 ---
 
-35
-### 🔷 Libtool-2.4.6
+### 🔷 8.35. Libtool-2.4.6
 Распаковываем Libtool-2.4.6 и переходим в папку с пакетом
 ```
 tar xvf libtool-2.4.6.tar.xz && cd libtool-2.4.6
 ```
-TEXT
+Конфигурируем Libtool для компиляции
 ```
 ./configure --prefix=/usr
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -1948,7 +1947,7 @@ sys     0m0.173s
 (lfs chroot) root:/sources/libtool-2.4.6# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make -j8 check
 ```
@@ -1963,23 +1962,14 @@ ERROR: 138 tests were run,
 ## -------------------------- ##
 ## testsuite.log was created. ##
 ## -------------------------- ##
-```
-TEXT
-```
-make check TESTSUITEFLAGS=-j8
-```
-## ------------- ##
-## Test results. ##
-## ------------- ##
 
-ERROR: 138 tests were run,
-64 failed (59 expected failures).
-32 tests were skipped.
-## -------------------------- ##
-## testsuite.log was created. ##
-## -------------------------- ##
+Please send `tests/testsuite.log' and all information you think might help:
+
+   To: <bug-libtool@gnu.org>
+   Subject: [GNU Libtool 2.4.6] testsuite: 123 124 125 126 130 failed
+
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1987,11 +1977,11 @@ make install
 (lfs chroot) root:/sources/libtool-2.4.6# echo $?
 0
 ```
-TEXT
+Удаляем неспользуемую статическую библиотеку
 ```
 rm -fv /usr/lib/libltdl.a
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf libtool-2.4.6
 ```
