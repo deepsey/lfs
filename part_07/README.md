@@ -1720,17 +1720,17 @@ cd .. && rm -rf psmisc-23.4
 ```
 
 ---
-31
-### 🔷 Gettext-0.21
+
+### 🔷 8.31. Gettext-0.21
 Распаковываем Gettext-0.21 и переходим в папку с пакетом
 ```
 tar xvf gettext-0.21.tar.xz && cd gettext-0.21 
 ```
-TEXT
+Конфигурируем Gettext для компиляции
 ```
 ./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/gettext-0.21
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -1741,7 +1741,7 @@ sys     0m12.377s
 (lfs chroot) root:/sources/gettext-0.21# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make -j8 check
 ```
@@ -1758,7 +1758,7 @@ Testsuite summary for gettext-tools 0.21
 # ERROR: 0
 ============================================================================
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1769,13 +1769,12 @@ make install
 ```
 chmod -v 0755 /usr/lib/preloadable_libintl.so
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf gettext-0.21
 ```
 
 ---
-
 32
 ### 🔷 Bison-3.8.2
 Распаковываем Bison-3.8.2 и переходим в папку с пакетом
