@@ -1988,17 +1988,16 @@ cd .. && rm -rf libtool-2.4.6
 
 ---
 
-36
-### 🔷 GDBM-1.23
+### 🔷 8.36. GDBM-1.23
 Распаковываем GDBM-1.23 и переходим в папку с пакетом
 ```
 tar xvf gdbm-1.23.tar.gz && cd gdbm-1.23 
 ```
-TEXT
+Конфигурируем GDBM для компиляции
 ```
 ./configure --prefix=/usr --disable-static --enable-libgdbm-compat
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2009,7 +2008,7 @@ sys     0m0.615s
 (lfs chroot) root:/sources/gdbm-1.23# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make check TESTSUITEFLAGS=-j8
 ```
@@ -2020,7 +2019,7 @@ make check TESTSUITEFLAGS=-j8
 
 All 33 tests were successful.
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -2028,13 +2027,11 @@ make install
 (lfs chroot) root:/sources/gdbm-1.23# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf gdbm-1.23
 ```
-
 ---
-
 37
 ### 🔷 Gperf-3.1
 Распаковываем Gperf-3.1 и переходим в папку с пакетом
