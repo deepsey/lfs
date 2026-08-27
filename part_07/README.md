@@ -1432,6 +1432,9 @@ grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
 Вывод последней команды должен быть как указано выше.  
 Проверяем, что компилятор ищет корректные заголовочные файлы
 ```
+grep -B4 '^ /usr/include' dummy.log
+```
+```
  /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include
  /usr/local/include
  /usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed
