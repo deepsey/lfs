@@ -1554,7 +1554,2550 @@ cd .. && rm -rf pkg-config-0.29.2
 ```
 ---
 
+### 🔷 8.28. Ncurses-6.3
 
+Распаковываем Ncurses-6.3 и переходим в папку с пакетом
+```
+tar xvf ncurses-6.3.tar.gz && cd ncurses-6.3
+```
+Готовим Ncurses для компиляции
+```
+./configure --prefix=/usr --mandir=/usr/share/man --with-shared --without-debug --without-normal --enable-pc-files --enable-widec --with-pkg-config-libdir=/usr/lib/pkgconfig
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m5.597s
+user    0m26.036s
+sys     0m3.513s
+(lfs chroot) root:/sources/ncurses-6.3# echo $?
+0
+```
+Инсталляция этого пакета перезапишет libncursesw.so.6.3 в месте расположения. Это может привести к нарушению в работе процесса shellб который использует код и данные этой библиотеки. Установим пакет с переменной DESTDIR и корректно переместим файл библиотеки, используя команду install. Не нужный статический архив также удаляем
+```
+make DESTDIR=$PWD/dest install
+```
+```
+install -vm755 dest/usr/lib/libncursesw.so.6.3 /usr/lib
+```
+```
+rm -v  dest/usr/lib/{libncursesw.so.6.3,libncurses++w.a}
+```
+```
+cp -av dest/* /
+```
+Создаем нужные симлинки
+```
+for lib in ncurses form panel menu ; do
+    rm -vf                    /usr/lib/lib${lib}.so
+    echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
+    ln -sfv ${lib}w.pc        /usr/lib/pkgconfig/${lib}.pc
+done
+```
+Убеждаемся, что старые приложения, который ищут -lcurses во время компиляции, все еще компилируемые:
+```
+rm -vf /usr/lib/libcursesw.so
+```
+```
+echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
+```
+```
+ln -sfv libncurses.so /usr/lib/libcurses.so
+```
+Устанавливаем документацию
+```
+mkdir -pv /usr/share/doc/ncurses-6.3
+```
+```
+cp -v -R doc/* /usr/share/doc/ncurses-6.3
+```
+Удаляем исходные файлы пакета из source
+```
+cd .. && rm -rf ncurses-6.3
+```
+
+---
+
+29
+### 🔷 Sed-4.8
+
+Распаковываем Sed-4.8 и переходим в папку с пакетом
+```
+tar xvf sed-4.8.tar.xz && cd sed-4.8
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.985s
+user    0m4.977s
+sys     0m0.555s
+(lfs chroot) root:/sources/sed-4.8# echo $?
+0
+```
+```
+make html
+```
+TEXT
+```
+chown -Rv tester .
+```
+```
+su tester -c "PATH=$PATH make check"
+```
+```
+============================================================================
+Testsuite summary for GNU sed 4.8
+============================================================================
+# TOTAL: 178
+# PASS:  157
+# SKIP:  21
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+===========================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/sed-4.8# echo $?
+0
+```
+```
+install -d -m755 /usr/share/doc/sed-4.8
+```
+```
+install -m644 doc/sed.html /usr/share/doc/sed-4.8
+```
+TEXT REMOVE
+```
+cd .. && rm -rf sed-4.8
+```
+
+---
+
+30
+### 🔷 Psmisc-23.4
+Распаковываем Psmisc-23.4 и переходим в папку с пакетом
+```
+tar xvf psmisc-23.4.tar.xz && cd psmisc-23.4
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.372s
+user    0m1.032s
+sys     0m0.126s
+(lfs chroot) root:/sources/psmisc-23.4# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/psmisc-23.4# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf psmisc-23.4
+```
+
+---
+
+31
+### 🔷 Gettext-0.21
+Распаковываем Gettext-0.21 и переходим в папку с пакетом
+```
+tar xvf gettext-0.21.tar.xz && cd gettext-0.21 
+```
+TEXT
+```
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/gettext-0.21
+```
+TEXT
+```
+time make -j8
+```
+```
+real    1m0.511s
+user    1m50.590s
+sys     0m12.377s
+(lfs chroot) root:/sources/gettext-0.21# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+============================================================================
+Testsuite summary for gettext-tools 0.21
+============================================================================
+# TOTAL: 266
+# PASS:  252
+# SKIP:  14
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/gettext-0.21# echo $?
+0
+```
+```
+chmod -v 0755 /usr/lib/preloadable_libintl.so
+```
+TEXT REMOVE
+```
+cd .. && rm -rf gettext-0.21
+```
+
+---
+
+32
+### 🔷 Bison-3.8.2
+Распаковываем Bison-3.8.2 и переходим в папку с пакетом
+```
+tar xvf bison-3.8.2.tar.xz && cd bison-3.8.2
+```
+TEXT
+```
+./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
+```
+time make -j8
+```
+```
+real    0m1.982s
+user    0m12.243s
+sys     0m1.357s
+(lfs chroot) root:/sources/bison-3.8.2# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+## ------------- ##
+## Test results. ##
+## ------------- ##
+
+712 tests were successful.
+64 tests were skipped.
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/bison-3.8.2# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf bison-3.8.2
+```
+
+---
+
+33
+### 🔷 Grep-3.7
+Распаковываем Grep-3.7 и переходим в папку с пакетом
+```
+tar xvf grep-3.7.tar.xz && cd grep-3.7
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.562s
+user    0m5.647s
+sys     0m0.778s
+(lfs chroot) root:/sources/grep-3.7# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+============================================================================
+Testsuite summary for GNU grep 3.7
+============================================================================
+# TOTAL: 201
+# PASS:  192
+# SKIP:  9
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/grep-3.7# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf grep-3.7
+```
+
+---
+
+34
+### 🔷 Bash-5.1.16
+Распаковываем Bash-5.1.16 и переходим в папку с пакетом
+```
+tar xvf bash-5.1.16.tar.gz && cd bash-5.1.16
+```
+TEXT
+```
+./configure --prefix=/usr --docdir=/usr/share/doc/bash-5.1.16 --without-bash-malloc --with-installed-readline
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m3.329s
+user    0m17.781s
+sys     0m1.613s
+(lfs chroot) root:/sources/bash-5.1.16# echo $?
+0
+```
+TEXT
+```
+chown -Rv tester .
+```
+TEXT
+```
+su -s /usr/bin/expect tester << EOF
+set timeout -1
+spawn make tests
+expect eof
+lassign [wait] _ _ _ value
+exit $value
+EOF
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/bash-5.1.16# echo $?
+0
+```
+TEXT
+````
+exec /usr/bin/bash --login
+```
+TEXT REMOVE
+```
+cd .. && rm -rf bash-5.1.16
+```
+
+---
+
+35
+### 🔷 Libtool-2.4.6
+Распаковываем Libtool-2.4.6 и переходим в папку с пакетом
+```
+tar xvf libtool-2.4.6.tar.xz && cd libtool-2.4.6
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.764s
+user    0m1.390s
+sys     0m0.173s
+(lfs chroot) root:/sources/libtool-2.4.6# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+## ------------- ##
+## Test results. ##
+## ------------- ##
+
+ERROR: 138 tests were run,
+64 failed (59 expected failures).
+32 tests were skipped.
+## -------------------------- ##
+## testsuite.log was created. ##
+## -------------------------- ##
+```
+TEXT
+```
+make check TESTSUITEFLAGS=-j8
+```
+## ------------- ##
+## Test results. ##
+## ------------- ##
+
+ERROR: 138 tests were run,
+64 failed (59 expected failures).
+32 tests were skipped.
+## -------------------------- ##
+## testsuite.log was created. ##
+## -------------------------- ##
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/libtool-2.4.6# echo $?
+0
+```
+TEXT
+```
+rm -fv /usr/lib/libltdl.a
+```
+TEXT REMOVE
+```
+cd .. && rm -rf libtool-2.4.6
+```
+
+---
+
+36
+### 🔷 GDBM-1.23
+Распаковываем GDBM-1.23 и переходим в папку с пакетом
+```
+tar xvf gdbm-1.23.tar.gz && cd gdbm-1.23 
+```
+TEXT
+```
+./configure --prefix=/usr --disable-static --enable-libgdbm-compat
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.174s
+user    0m4.714s
+sys     0m0.615s
+(lfs chroot) root:/sources/gdbm-1.23# echo $?
+0
+```
+TEXT
+```
+make check TESTSUITEFLAGS=-j8
+```
+```
+## ------------- ##
+## Test results. ##
+## ------------- ##
+
+All 33 tests were successful.
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/gdbm-1.23# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf gdbm-1.23
+```
+
+---
+
+37
+### 🔷 Gperf-3.1
+Распаковываем Gperf-3.1 и переходим в папку с пакетом
+```
+tar xvf gperf-3.1.tar.gz && cd gperf-3.1
+```
+TEXT
+```
+./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.548s
+user    0m1.409s
+sys     0m0.133s
+(lfs chroot) root:/sources/gperf-3.1# echo $?
+0
+```
+TEXT
+```
+make -j1 check
+```
+TEXT
+``
+make install
+```
+```
+(lfs chroot) root:/sources/gperf-3.1# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf gperf-3.1
+```
+
+---
+
+38
+### 🔷 Expat-2.4.6
+Распаковываем Expat-2.4.6 и переходим в папку с пакетом
+```
+tar xvf expat-2.4.6.tar.gz && cd expat-2.4.6
+```
+TEXT
+```
+./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/expat-2.4.6
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.927s
+user    0m3.391s
+sys     0m0.180s
+(lfs chroot) root:/sources/expat-2.4.6# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+============================================================================
+Testsuite summary for expat 2.4.6
+============================================================================
+# TOTAL: 2
+# PASS:  2
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+``
+make install
+```
+```
+(lfs chroot) root:/sources/expat-2.4.6# echo $?
+0
+```
+TEXT
+```
+install -v -m644 doc/*.{html,css} /usr/share/doc/expat-2.4.6
+```
+TEXT REMOVE
+```
+cd .. && rm -rf expat-2.4.6
+```
+
+---
+
+39
+### 🔷 Inetutils-2.2
+Распаковываем Inetutils-2.2 и переходим в папку с пакетом
+```
+tar xvf inetutils-2.2.tar.xz && cd inetutils-2.2
+```
+TEXT
+```
+./configure --prefix=/usr --bindir=/usr/bin --localstatedir=/var --disable-logger --disable-whois --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-servers
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m2.754s
+user    0m8.815s
+sys     0m1.362s
+(lfs chroot) root:/sources/inetutils-2.2# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+============================================================================
+Testsuite summary for GNU inetutils 2.2
+============================================================================
+# TOTAL: 11
+# PASS:  10
+# SKIP:  1
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/inetutils-2.2# echo $?
+0
+```
+TEXT
+```
+mv -v /usr/{,s}bin/ifconfig
+```
+TEXT REMOVE
+```
+cd .. && rm -rf inetutils-2.2
+```
+
+---
+
+40
+### 🔷 Less-590
+Распаковываем Less-590 и переходим в папку с пакетом
+```
+tar xvf less-590.tar.gz && cd less-590
+```
+TEXT
+```
+./configure --prefix=/usr --sysconfdir=/etc
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.527s
+user    0m2.986s
+sys     0m0.301s
+(lfs chroot) root:/sources/less-590# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/less-590# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf less-590
+```
+
+---
+
+41
+### 🔷 Perl-5.34.0
+Распаковываем Perl-5.34.0 и переходим в папку с пакетом
+```
+tar xvf perl-5.34.0.tar.xz && cd perl-5.34.0
+```
+TEXT
+```
+patch -Np1 -i ../perl-5.34.0-upstream_fixes-1.patch
+```
+TEXT
+```
+export BUILD_ZLIB=False
+export BUILD_BZIP2=0
+```
+TEXT
+```
+sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dprivlib=/usr/lib/perl5/5.34/core_perl -Darchlib=/usr/lib/perl5/5.34/core_perl -Dsitelib=/usr/lib/perl5/5.34/site_perl -Dsitearch=/usr/lib/perl5/5.34/site_perl -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m23.312s
+user    2m4.730s
+sys     0m8.555s
+(lfs chroot) root:/sources/perl-5.34.0# echo $?
+0
+```
+TEXT
+```
+make -j8 test
+```
+```
+Failed 9 tests out of 2542, 99.65% okay.
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/perl-5.34.0# echo $?
+0
+```
+```
+unset BUILD_ZLIB BUILD_BZIP2
+```
+TEXT REMOVE
+```
+cd .. && rm -rf perl-5.34.0
+```
+---
+
+42
+### 🔷 XML::Parser-2.46
+Распаковываем XML::Parser-2.46 и переходим в папку с пакетом
+```
+tar xvf XML-Parser-2.46.tar.gz && cd XML-Parser-2.46
+```
+TEXT
+```
+perl Makefile.PL
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.038s
+user    0m1.155s
+sys     0m0.083s
+(lfs chroot) root:/sources/XML-Parser-2.46# echo $?
+0
+```
+TEXT
+```
+make -j8 test
+```
+```
+All tests successful.
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/XML-Parser-2.46# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf XML-Parser-2.46
+```
+---
+
+43
+### 🔷 Intltool-0.51.0
+Распаковываем Intltool-0.51.0 и переходим в папку с пакетом
+```
+tar xvf intltool-0.51.0.tar.gz && cd intltool-0.51.0 
+```
+TEXT
+```
+sed -i 's:\\\${:\\\$\\{:' intltool-update.in
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.016s
+user    0m0.019s
+sys     0m0.004s
+(lfs chroot) root:/sources/intltool-0.51.0# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+===========================================================================
+Testsuite summary for intltool 0.51.0
+============================================================================
+# TOTAL: 1
+# PASS:  1
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/intltool-0.51.0# echo $?
+0
+```
+```
+install -v -Dm644 doc/I18N-HOWTO /usr/share/doc/intltool-0.51.0/I18N-HOWTO
+```
+TEXT REMOVE
+```
+cd .. && rm -rf intltool-0.51.0
+```
+---
+
+44
+### 🔷 Autoconf-2.71
+Распаковываем Autoconf-2.71 и переходим в папку с пакетом
+```
+tar xvf autoconf-2.71.tar.xz && cd autoconf-2.71
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.160s
+user    0m0.523s
+sys     0m0.067s
+(lfs chroot) root:/sources/autoconf-2.71# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+543 tests behaved as expected.
+56 tests were skipped.
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/autoconf-2.71# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf autoconf-2.71
+```
+---
+
+45
+### 🔷 Automake-1.16.5
+Распаковываем Automake-1.16.5 и переходим в папку с пакетом
+```
+tar xvf automake-1.16.5.tar.xz && cd automake-1.16.5
+```
+TEXT
+```
+./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.5
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.198s
+user    0m0.480s
+sys     0m0.068s
+(lfs chroot) root:/sources/automake-1.16.5# echo $?
+0
+```
+TEXT
+```
+make -j8 check
+```
+```
+============================================================================
+Testsuite summary for GNU Automake 1.16.5
+============================================================================
+# TOTAL: 2926
+# PASS:  2715
+# SKIP:  173
+# XFAIL: 38
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/automake-1.16.5# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf automake-1.16.5
+```
+---
+
+46
+### 🔷 OpenSSL-3.0.12
+В книге устанавливается OpenSSL-3.0.1, но его тестирование заканчивалось с ошибками, поэтому разворачивался OpenSSL-3.0.12
+```
+wget https://github.com/openssl/openssl/releases/download/openssl-3.0.12/openssl-3.0.12.tar.gz --directory-prefix=$LFS/sources
+```
+Распаковываем OpenSSL-3.0.12 и переходим в папку с пакетом
+```
+tar xvf openssl-3.0.12.tar.gz && cd openssl-3.0.12
+```
+TEXT
+```
+./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.368s
+user    0m0.346s
+sys     0m0.026s
+(lfs chroot) root:/sources/openssl-3.0.12# echo $?
+0
+```
+TEXT
+```
+make -j8 test
+```
+```
+All tests successful.
+Files=250, Tests=3351, 216 wallclock secs ( 2.81 usr  0.32 sys + 182.36 cusr 24.50 csys = 209.99 CPU)
+Result: PASS
+```
+TEXT
+```
+sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
+```
+```
+make MANSUFFIX=ssl install
+```
+```
+(lfs chroot) root:/sources/openssl-3.0.12# echo $?
+0
+```
+TEXT
+```
+mv -v /usr/share/doc/openssl /usr/share/doc/openssl-3.0.12
+```
+TEXT
+```
+cp -vfr doc/* /usr/share/doc/openssl-3.0.12
+```
+TEXT REMOVE
+```
+cd .. && rm -rf openssl-3.0.12
+```
+---
+
+47
+### 🔷 Kmod-29
+Распаковываем Kmod-29 и переходим в папку с пакетом
+```
+tar xvf kmod-29.tar.xz && cd kmod-29 
+```
+TEXT
+```
+./configure --prefix=/usr --sysconfdir=/etc --with-openssl --with-xz --with-zstd --with-zlib
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.885s
+user    0m3.520s
+sys     0m0.413s
+(lfs chroot) root:/sources/kmod-29# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/kmod-29# echo $?
+0
+```
+```
+for target in depmod insmod modinfo modprobe rmmod; do
+  ln -sfv ../bin/kmod /usr/sbin/$target
+done
+```
+```
+ln -sfv kmod /usr/bin/lsmod
+```
+TEXT REMOVE
+```
+cd .. && rm -rf kmod-29
+```
+---
+
+48
+### 🔷 Libelf from Elfutils-0.186
+Распаковываем Elfutils-0.186 и переходим в папку с пакетом
+```
+tar xvf elfutils-0.186.tar.bz2 && cd elfutils-0.186
+```
+TEXT
+```
+./configure --prefix=/usr --disable-debuginfod --enable-libdebuginfod=dummy
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m11.520s
+user    0m54.303s
+sys     0m9.094s
+(lfs chroot) root:/sources/elfutils-0.186# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for elfutils 0.186
+============================================================================
+# TOTAL: 232
+# PASS:  227
+# SKIP:  5
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make -C libelf install
+```
+```
+(lfs chroot) root:/sources/elfutils-0.186# echo $?
+0
+```
+```
+install -vm644 config/libelf.pc /usr/lib/pkgconfig
+```
+```
+rm /usr/lib/libelf.a
+```
+TEXT REMOVE
+```
+cd .. && rm -rf elfutils-0.186
+---
+
+49
+### 🔷 Libffi-3.4.2
+Распаковываем Libffi-3.4.2 и переходим в папку с пакетом
+```
+tar xvf libffi-3.4.2.tar.gz && cd libffi-3.4.2
+```
+TEXT
+```
+./configure --prefix=/usr --disable-static --with-gcc-arch=native --disable-exec-static-tramp
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.453s
+user    0m0.989s
+sys     0m0.130s
+(lfs chroot) root:/sources/libffi-3.4.2# echo $?
+0
+```
+TEXT
+```
+make check
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/libffi-3.4.2# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf libffi-3.4.2
+
+---
+
+50
+### 🔷 Python-3.10.2
+Распаковываем Python-3.10.2 и переходим в папку с пакетом
+```
+tar xvf Python-3.10.2.tar.xz && cd Python-3.10.2
+```
+TEXT
+```
+./configure --prefix=/usr --enable-shared --with-system-expat --with-system-ffi -with-ensurepip=yes --enable-optimizations
+```
+TEXT
+```
+time make -j8
+```
+```
+real    2m18.905s
+user    5m36.379s
+sys     0m13.204s
+(lfs chroot) root:/sources/Python-3.10.2# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/Python-3.10.2# echo $?
+0
+```
+TEXT
+```
+install -v -dm755 /usr/share/doc/python-3.10.2/html
+```
+```
+tar --strip-components=1 --no-same-owner --no-same-permissions -C /usr/share/doc/python-3.10.2/html -xvf ../python-3.10.2-docs-html.tar.bz2
+```
+TEXT REMOVE
+```
+cd .. && rm -rf Python-3.10.2
+
+---
+
+51
+### 🔷 Ninja-1.10.2
+Распаковываем Ninja-1.10.2 и переходим в папку с пакетом
+```
+tar xvf ninja-1.10.2.tar.gz && cd ninja-1.10.2
+```
+TEXT
+```
+export NINJAJOBS=8
+```
+TEXT
+```
+sed -i '/int Guess/a int   j = 0; char* jobs = getenv( "NINJAJOBS" ); if ( jobs != NULL ) j = atoi( jobs ); if ( j > 0 ) return j; ' src/ninja.cc
+```
+TEXT
+```
+python3 configure.py --bootstrap
+```
+TEXT
+```
+./ninja ninja_test
+```
+```
+[19/19] LINK ninja_test
+(lfs chroot) root:/sources/ninja-1.10.2# echo $?
+0
+```
+```
+./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
+```
+```
+[343/343] ElideMiddle.ElideInTheMiddle
+passed
+(lfs chroot) root:/sources/ninja-1.10.2# echo $?
+0
+```
+TEXT
+```
+install -vm755 ninja /usr/bin/
+```
+```
+install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
+```
+```
+install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
+```
+TEXT REMOVE
+```
+cd .. && rm -rf ninja-1.10.2
+
+---
+
+52
+### 🔷 Meson-0.61.1
+Распаковываем Meson-0.61.1 и переходим в папку с пакетом
+```
+tar xvf meson-0.61.1.tar.gz && cd meson-0.61.1
+```
+TEXT
+```
+python3 setup.py build
+```
+TEXT
+```
+python3 setup.py install --root=dest
+```
+```
+cp -rv dest/* /
+```
+```
+install -vDm644 data/shell-completions/bash/meson /usr/share/bash-completion/completions/meson
+```
+```
+install -vDm644 data/shell-completions/zsh/_meson /usr/share/zsh/site-functions/_meson
+```
+TEXT REMOVE
+```
+cd .. && rm -rf meson-0.61.1
+
+---
+
+53
+### 🔷 Coreutils-9.0
+Распаковываем Coreutils-9.0 и переходим в папку с пакетом
+```
+tar xvf coreutils-9.0.tar.xz && cd coreutils-9.0
+```
+TEXT
+```
+patch -Np1 -i ../coreutils-9.0-i18n-1.patch
+```
+TEXT
+```
+autoreconf -fiv
+```
+```
+FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr --enable-no-install-program=kill,uptime
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m5.864s
+user    0m36.951s
+sys     0m4.899s
+(lfs chroot) root:/sources/coreutils-9.0# echo $?
+0
+```
+TEXT
+```
+make NON_ROOT_USERNAME=tester check-root
+```
+```
+============================================================================
+Testsuite summary for GNU coreutils 9.0
+============================================================================
+# TOTAL: 33
+# PASS:  20
+# SKIP:  13
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+echo "dummy:x:102:tester" >> /etc/group
+```
+TEXT
+```
+chown -Rv tester . 
+```
+TEXT
+```
+su tester -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check"
+```
+TEXT
+```
+============================================================================
+Testsuite summary for GNU coreutils 9.0
+============================================================================
+# TOTAL: 365
+# PASS:  347
+# SKIP:  18
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+sed -i '/dummy/d' /etc/group
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/coreutils-9.0# echo $?
+0
+```
+TEXT
+```
+mv -v /usr/bin/chroot /usr/sbin
+```
+```
+mv -v /usr/share/man/man1/chroot.1 /usr/share/man/man8/chroot.8
+```
+```
+sed -i 's/"1"/"8"/' /usr/share/man/man8/chroot.8
+```
+TEXT REMOVE
+```
+cd .. && rm -rf coreutils-9.0
+
+---
+
+54
+### 🔷 Check-0.15.2
+Распаковываем Check-0.15.2 и переходим в папку с пакетом
+```
+tar xvf check-0.15.2.tar.gz && cd check-0.15.2
+```
+TEXT
+```
+./configure --prefix=/usr --disable-static
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.313s
+user    0m5.653s
+sys     0m0.654s
+(lfs chroot) root:/sources/check-0.15.2# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for Check 0.15.2
+============================================================================
+# TOTAL: 9
+# PASS:  9
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make docdir=/usr/share/doc/check-0.15.2 install
+```
+```
+(lfs chroot) root:/sources/check-0.15.2# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf check-0.15.2
+
+---
+
+55
+### 🔷 Diffutils-3.8
+Распаковываем Diffutils-3.8 и переходим в папку с пакетом
+```
+tar xvf diffutils-3.8.tar.xz && cd diffutils-3.8
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.291s
+user    0m6.019s
+sys     0m0.921s
+(lfs chroot) root:/sources/diffutils-3.8# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for GNU diffutils 3.8
+============================================================================
+# TOTAL: 203
+# PASS:  187
+# SKIP:  16
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/diffutils-3.8# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf diffutils-3.8
+
+---
+
+56
+### 🔷 Gawk-5.1.1
+Распаковываем Gawk-5.1.1 и переходим в папку с пакетом
+```
+tar xvf gawk-5.1.1.tar.xz && cd gawk-5.1.1
+```
+TEXT
+```
+sed -i 's/extras//' Makefile.in
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+(lfs chroot) root:/sources/gawk-5.1.1# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+ALL TESTS PASSED
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/gawk-5.1.1# echo $?
+0
+```
+TEXT
+```
+mkdir -pv /usr/share/doc/gawk-5.1.1
+```
+```
+cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-5.1.1
+```
+TEXT REMOVE
+```
+cd .. && rm -rf gawk-5.1.1
+
+---
+
+57
+### 🔷 Findutils-4.9.0
+Распаковываем Findutils-4.9.0 и переходим в папку с пакетом
+```
+tar xvf findutils-4.9.0.tar.xz && cd findutils-4.9.0
+```
+TEXT
+```
+case $(uname -m) in
+    i?86)   TIME_T_32_BIT_OK=yes ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
+    x86_64) ./configure --prefix=/usr --localstatedir=/var/lib/locate ;;
+esac
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m2.229s
+user    0m7.976s
+sys     0m1.292s
+(lfs chroot) root:/sources/findutils-4.9.0# echo $?
+0
+```
+TEXT
+```
+chown -Rv tester .
+```
+```
+su tester -c "PATH=$PATH make check"
+```
+```
+============================================================================
+Testsuite summary for GNU findutils 4.9.0
+============================================================================
+# TOTAL: 17
+# PASS:  15
+# SKIP:  2
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+make install
+```
+```
+(lfs chroot) root:/sources/findutils-4.9.0# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf findutils-4.9.0
+
+---
+
+58
+### 🔷 Groff-1.22.4
+Распаковываем Groff-1.22.4 и переходим в папку с пакетом
+```
+tar xvf groff-1.22.4.tar.gz && cd groff-1.22.4
+```
+TEXT
+```
+PAGE=A4 ./configure --prefix=/usr
+```
+TEXT
+```
+time make -j1
+```
+```
+real    0m33.189s
+user    0m31.509s
+sys     0m2.349s
+(lfs chroot) root:/sources/groff-1.22.4# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/groff-1.22.4# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf groff-1.22.4
+
+---
+
+59
+### 🔷 GRUB-2.06
+Распаковываем GRUB-2.06 и переходим в папку с пакетом
+```
+tar xvf grub-2.06.tar.xz && cd grub-2.06
+```
+TEXT
+```
+./configure --prefix=/usr --sysconfdir=/etc --disable-efiemu --disable-werror
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m11.452s
+user    0m57.743s
+sys     0m8.807s
+(lfs chroot) root:/sources/grub-2.06# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/grub-2.06# echo $?
+0
+```
+```
+mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+```
+TEXT REMOVE
+```
+cd .. && rm -rf grub-2.06
+
+---
+
+60
+### 🔷 Gzip-1.11
+Распаковываем Gzip-1.11 и переходим в папку с пакетом
+```
+tar xvf gzip-1.11.tar.xz && cd gzip-1.11
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.787s
+user    0m3.024s
+sys     0m0.537s
+(lfs chroot) root:/sources/gzip-1.11# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for gzip 1.11
+============================================================================
+# TOTAL: 23
+# PASS:  22
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  1
+# XPASS: 0
+# ERROR: 0
+============================================================================
+See tests/test-suite.log
+Please report to bug-gzip@gnu.org
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/gzip-1.11# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf gzip-1.11
+
+---
+
+61
+### 🔷 IPRoute2-5.16.0
+Распаковываем IPRoute2-5.16.0 и переходим в папку с пакетом
+```
+tar xvf iproute2-5.16.0.tar.xz && cd iproute2-5.16.0
+```
+TEXT
+```
+sed -i /ARPD/d Makefile
+```
+```
+rm -fv man/man8/arpd.8
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m3.820s
+user    0m17.750s
+sys     0m2.088s
+(lfs chroot) root:/sources/iproute2-5.16.0# echo $?
+0
+```
+TEXT
+```
+make SBINDIR=/usr/sbin install
+```
+```
+(lfs chroot) root:/sources/iproute2-5.16.0# echo $?
+0
+```
+TEXT
+```
+mkdir -pv /usr/share/doc/iproute2-5.16.0
+```
+```
+cp -v COPYING README* /usr/share/doc/iproute2-5.16.0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf iproute2-5.16.0
+
+---
+
+62
+### 🔷 Kbd-2.4.0
+Распаковываем Kbd-2.4.0 и переходим в папку с пакетом
+```
+tar xvf kbd-2.4.0.tar.xz && cd kbd-2.4.0
+```
+TEXT
+```
+patch -Np1 -i ../kbd-2.4.0-backspace-1.patch
+```
+TEXT
+```
+sed -i '/RESIZECONS_PROGS=/s/yes/no/' configure
+```
+```
+sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+```
+TEXT
+```
+./configure --prefix=/usr --disable-vlock
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m2.697s
+user    0m9.652s
+sys     0m1.673s
+(lfs chroot) root:/sources/kbd-2.4.0# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+## ------------- ##
+## Test results. ##
+## ------------- ##
+
+36 tests were successful.
+4 tests were skipped.
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/kbd-2.4.0# echo $?
+0
+```
+TEXT
+```
+mkdir -pv /usr/share/doc/kbd-2.4.0
+```
+```
+cp -R -v docs/doc/* /usr/share/doc/kbd-2.4.0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf kbd-2.4.0
+
+---
+
+63
+### 🔷 Libpipeline-1.5.5
+Распаковываем Libpipeline-1.5.5 и переходим в папку с пакетом
+```
+tar xvf libpipeline-1.5.5.tar.gz && cd libpipeline-1.5.5
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.965s
+user    0m2.187s
+sys     0m0.348s
+(lfs chroot) root:/sources/libpipeline-1.5.5# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for libpipeline 1.5.5
+============================================================================
+# TOTAL: 7
+# PASS:  7
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/libpipeline-1.5.5# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf libpipeline-1.5.5
+
+---
+
+64
+### 🔷 Make-4.3
+Распаковываем Make-4.3 и переходим в папку с пакетом
+```
+tar xvf make-4.3.tar.gz && cd make-4.3
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.807s
+user    0m3.999s
+sys     0m0.437s
+(lfs chroot) root:/sources/make-4.3# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+90 Tests in 125 Categories Complete ... No Failures :-)
+
+
+======================================================================
+ Regression PASSED: GNU Make 4.3 (x86_64-pc-linux-gnu) built with gcc 
+======================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/make-4.3# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf make-4.3
+
+---
+
+65
+### 🔷 Patch-2.7.6
+Распаковываем Patch-2.7.6 и переходим в папку с пакетом
+```
+tar xvf patch-2.7.6.tar.xz && cd patch-2.7.6
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m1.145s
+user    0m4.512s
+sys     0m0.508s
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for GNU patch 2.7.6
+============================================================================
+# TOTAL: 44
+# PASS:  41
+# SKIP:  1
+# XFAIL: 2
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/patch-2.7.6# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf patch-2.7.6
+
+---
+
+66
+### 🔷 Tar-1.34
+Распаковываем Tar-1.34 и переходим в папку с пакетом
+```
+tar xvf tar-1.34.tar.xz && cd tar-1.34
+```
+TEXT
+```
+FORCE_UNSAFE_CONFIGURE=1 ./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m3.697s
+user    0m12.489s
+sys     0m1.404s
+(lfs chroot) root:/sources/tar-1.34# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+## ------------- ##
+## Test results. ##
+## ------------- ##
+
+ERROR: 218 tests were run,
+1 failed unexpectedly.
+20 tests were skipped.
+## -------------------------- ##
+## testsuite.log was created. ##
+## -------------------------- ##
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/tar-1.34# echo $?
+0
+```
+```
+make -C doc install-html docdir=/usr/share/doc/tar-1.34
+```
+TEXT REMOVE
+```
+cd .. && rm -rf tar-1.34
+
+---
+
+67
+### 🔷 Texinfo-6.8
+Распаковываем Texinfo-6.8 и переходим в папку с пакетом
+```
+tar xvf texinfo-6.8.tar.xz && cd texinfo-6.8
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+sed -e 's/__attribute_nonnull__/__nonnull/' -i gnulib/lib/malloc/dynarray-skeleton.c
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m5.120s
+user    0m14.095s
+sys     0m1.413s
+(lfs chroot) root:/sources/texinfo-6.8# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for GNU Texinfo 6.8
+============================================================================
+# TOTAL: 1
+# PASS:  1
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/texinfo-6.8# echo $?
+0
+```
+TEXT
+```
+make TEXMF=/usr/share/texmf install-tex
+```
+TEXT
+```
+pushd /usr/share/info
+  rm -v dir
+  for f in *
+    do install-info $f dir 2>/dev/null
+  done
+popd
+```
+TEXT REMOVE
+```
+cd .. && rm -rf texinfo-6.8
+
+---
+
+68
+### 🔷 Vim-8.2.4383
+Распаковываем Vim-8.2.4383 и переходим в папку с пакетом
+```
+tar xvf vim-8.2.4383.tar.gz && cd vim-8.2.4383
+```
+TEXT
+```
+echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+```
+TEXT
+```
+./configure --prefix=/usr
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m9.314s
+user    1m4.330s
+sys     0m3.426s
+(lfs chroot) root:/sources/vim-8.2.4383# echo $?
+0
+```
+TEXT
+```
+chown -Rv tester .
+```
+TEXT
+```
+su tester -c "LANG=en_US.UTF-8 make -j1 test" &> vim-test.log
+```
+```
+-------------------------------
+Executed:  4683 Tests
+ Skipped:   107 Tests
+  Failed:     0 Tests
+
+ALL DONE
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/vim-8.2.4383# echo $?
+0
+```
+TEXT
+```
+ln -sv vim /usr/bin/vi
+```
+```
+for L in  /usr/share/man/{,*/}man1/vim.1; do
+    ln -sv vim.1 $(dirname $L)/vi.1
+done
+```
+TEXT
+```
+ln -sv ../vim/vim82/doc /usr/share/doc/vim-8.2.4383
+```
+TEXT
+```
+cat > /etc/vimrc << "EOF"
+" Begin /etc/vimrc
+
+" Ensure defaults are set before customizing settings, not after
+source $VIMRUNTIME/defaults.vim
+let skip_defaults_vim=1
+
+set nocompatible
+set backspace=2
+set mouse=
+syntax on
+if (&term == "xterm") || (&term == "putty")
+  set background=dark
+endif
+
+" End /etc/vimrc
+EOF
+```
+TEXT
+```
+vim -c ':options'
+```
+TEXT REMOVE
+```
+cd .. && rm -rf vim-8.2.4383
+
+---
+
+69
+### 🔷 Eudev-3.2.11
+Распаковываем Eudev-3.2.11 и переходим в папку с пакетом
+```
+tar xvf eudev-3.2.11.tar.gz && cd eudev-3.2.11
+```
+TEXT
+```
+./configure --prefix=/usr --bindir=/usr/sbin --sysconfdir=/etc --enable-manpages --disable-static
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m3.619s
+user    0m10.847s
+sys     0m1.600s
+(lfs chroot) root:/sources/eudev-3.2.11# echo $?
+0
+```
+TEXT
+```
+mkdir -pv /usr/lib/udev/rules.d
+```
+```
+mkdr -pv /etc/udev/rules.d
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for eudev 3.2.11
+============================================================================
+# TOTAL: 2
+# PASS:  2
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/eudev-3.2.11# echo $?
+0
+```
+TEXT
+```
+tar -xvf ../udev-lfs-20171102.tar.xz
+```
+```
+make -f udev-lfs-20171102/Makefile.lfs install
+```
+TEXT
+```
+udevadm hwdb --update
+```
+TEXT
+TEXT REMOVE
+```
+cd .. && rm -rf eudev-3.2.11
+
+---
+
+70
+### 🔷 Man-DB-2.10.1
+Распаковываем Man-DB-2.10.1 и переходим в папку с пакетом
+```
+tar xvf man-db-2.10.1.tar.xz && cd man-db-2.10.1
+```
+TEXT
+```
+./configure --prefix=/usr --docdir=/usr/share/doc/man-db-2.10.1 --sysconfdir=/etc --disable-setuid --enable-cache-owner=bin --with-browser=/usr/bin/lynx --with-vgrind=/usr/bin/vgrind --with-grap=/usr/bin/grap --with-systemdtmpfilesdir= --with-systemdsystemunitdir=
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m2.864s
+user    0m12.683s
+sys     0m1.879s
+(lfs chroot) root:/sources/man-db-2.10.1# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for man-db 2.10.1
+============================================================================
+# TOTAL: 12
+# PASS:  12
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/man-db-2.10.1# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf man-db-2.10.1
+
+---
+
+71
+### 🔷 Procps-ng-3.3.17
+Распаковываем Procps-ng-3.3.17 и переходим в папку с пакетом
+```
+tar xvf procps-ng-3.3.17.tar.xz && cd procps-3.3.17
+```
+TEXT
+```
+./configure --prefix=/usr --docdir=/usr/share/doc/procps-ng-3.3.17 --disable-static --disable-kill
+```
+TEXT
+```
+time make -j8
+```
+```
+(lfs chroot) root:/sources/procps-3.3.17# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+============================================================================
+Testsuite summary for procps-ng 3.3.17
+============================================================================
+# TOTAL: 1
+# PASS:  1
+# SKIP:  0
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/procps-3.3.17# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf procps-3.3.17
+
+---
+
+72
+### 🔷 Util-linux-2.37.4
+Распаковываем Util-linux-2.37.4 и переходим в папку с пакетом
+```
+tar xvf util-linux-2.37.4.tar.xz && cd util-linux-2.37.4
+```
+TEXT
+```
+./configure ADJTIME_PATH=/var/lib/hwclock/adjtime --bindir=/usr/bin --libdir=/usr/lib --sbindir=/usr/sbin --docdir=/usr/share/doc/util-linux-2.37.4 --disable-chfn-chsh --disable-login --disable-nologin --disable-su --disable-setpriv --disable-runuser --disable-pylibmount --disable-static --without-python --without-systemd --without-systemdsystemunitdir
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m9.891s
+user    1m2.491s
+sys     0m7.631s
+(lfs chroot) root:/sources/util-linux-2.37.4# echo $?
+0
+```
+TEXT
+```
+rm tests/ts/lsns/ioctl_ns
+```
+TEXT
+```
+chown -Rv tester .
+```
+```
+su tester -c "make -k check"
+```
+```
+---------------------------------------------------------------------
+  All 212 tests PASSED
+---------------------------------------------------------------------
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/util-linux-2.37.4# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf util-linux-2.37.4
+
+---
+
+73
+### 🔷 E2fsprogs-1.46.5
+Распаковываем E2fsprogs-1.46.5 и переходим в папку с пакетом
+```
+tar xvf e2fsprogs-1.46.5.tar.gz && cd e2fsprogs-1.46.5
+```
+TEXT
+```
+mkdir -v build && cd build
+```
+TEXT
+```
+../configure --prefix=/usr --sysconfdir=/etc --enable-elf-shlibs --disable-libblkid --disable-libuuid --disable-uuidd --disable-fsck
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m6.797s
+user    0m30.926s
+sys     0m3.448s
+(lfs chroot) root:/sources/e2fsprogs-1.46.5/build# echo $?
+0
+```
+TEXT
+```
+make check
+```
+```
+371 tests succeeded     0 tests failed
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/e2fsprogs-1.46.5/build# echo $?
+0
+```
+TEXT
+```
+rm -fv /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+```
+TEXT
+```
+gunzip -v /usr/share/info/libext2fs.info.gz
+```
+```
+install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
+```
+TEXT
+```
+makeinfo -o doc/com_err.info ../lib/et/com_err.texinfo
+```
+```
+install -v -m644 doc/com_err.info /usr/share/info
+```
+```
+install-info --dir-file=/usr/share/info/dir /usr/share/info/com_err.info
+```
+TEXT REMOVE
+```
+cd .. && cd .. && rm -rf util-linux-2.37.4
+
+---
+
+74
+### 🔷 Sysklogd-1.5.1
+Распаковываем Sysklogd-1.5.1 и переходим в папку с пакетом
+```
+tar xvf sysklogd-1.5.1.tar.gz && cd sysklogd-1.5.1 
+```
+TEXT
+```
+sed -i '/Error loading kernel symbols/{n;n;d}' ksym_mod.c
+```
+```
+sed -i 's/union wait/int/' syslogd.c
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.306s
+user    0m0.560s
+sys     0m0.041s
+(lfs chroot) root:/sources/sysklogd-1.5.1# echo $?
+0
+```
+TEXT
+```
+make BINDIR=/sbin install
+```
+```
+(lfs chroot) root:/sources/sysklogd-1.5.1# echo $?
+0
+```
+TEXT
+```
+cat > /etc/syslog.conf << "EOF"
+# Begin /etc/syslog.conf
+
+auth,authpriv.* -/var/log/auth.log
+*.*;auth,authpriv.none -/var/log/sys.log
+daemon.* -/var/log/daemon.log
+kern.* -/var/log/kern.log
+mail.* -/var/log/mail.log
+user.* -/var/log/user.log
+*.emerg *
+
+# End /etc/syslog.conf
+EOF
+```
+TEXT REMOVE
+```
+cd .. && rm -rf sysklogd-1.5.1
+
+---
+75
+### 🔷 Sysvinit-3.01
+Распаковываем Sysvinit-3.01 и переходим в папку с пакетом
+```
+tar xvf sysvinit-3.01.tar.xz && cd sysvinit-3.01
+```
+TEXT
+```
+patch -Np1 -i ../sysvinit-3.01-consolidated-1.patch
+```
+TEXT
+```
+time make -j8
+```
+```
+real    0m0.410s
+user    0m1.198s
+sys     0m0.106s
+(lfs chroot) root:/sources/sysvinit-3.01# echo $?
+0
+```
+TEXT
+```
+make install
+```
+```
+(lfs chroot) root:/sources/sysvinit-3.01# echo $?
+0
+```
+TEXT REMOVE
+```
+cd .. && rm -rf sysvinit-3.01
+
+---
 
 
 
