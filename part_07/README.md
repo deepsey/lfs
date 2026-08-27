@@ -1525,7 +1525,7 @@ sys     0m1.603s
 (lfs chroot) root:/sources/pkg-config-0.29.2# echo $?
 0
 ```
-TEXT TEST
+Тестируем результаты
 ```
 make check
 ```
@@ -1551,6 +1551,7 @@ make install
 
 ```
 cd .. && rm -rf pkg-config-0.29.2
+
 ---
 
 
