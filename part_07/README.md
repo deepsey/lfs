@@ -1775,15 +1775,16 @@ cd .. && rm -rf gettext-0.21
 ```
 
 ---
-32
-### 🔷 Bison-3.8.2
+### 🔷 8.32. Bison-3.8.2
 Распаковываем Bison-3.8.2 и переходим в папку с пакетом
 ```
 tar xvf bison-3.8.2.tar.xz && cd bison-3.8.2
 ```
-TEXT
+Конфигурируем Bison для компиляции
 ```
 ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.8.2
+```
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -1794,7 +1795,7 @@ sys     0m1.357s
 (lfs chroot) root:/sources/bison-3.8.2# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make -j8 check
 ```
@@ -1806,7 +1807,7 @@ make -j8 check
 712 tests were successful.
 64 tests were skipped.
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1814,7 +1815,7 @@ make install
 (lfs chroot) root:/sources/bison-3.8.2# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf bison-3.8.2
 ```
