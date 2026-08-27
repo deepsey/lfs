@@ -2183,17 +2183,17 @@ cd .. && rm -rf inetutils-2.2
 ```
 
 ---
-40
-### 🔷 Less-590
+
+### 🔷 8.40. Less-590
 Распаковываем Less-590 и переходим в папку с пакетом
 ```
 tar xvf less-590.tar.gz && cd less-590
 ```
-TEXT
+Конфигурируем Less для компиляции
 ```
 ./configure --prefix=/usr --sysconfdir=/etc
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2204,7 +2204,7 @@ sys     0m0.301s
 (lfs chroot) root:/sources/less-590# echo $?
 0
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -2212,7 +2212,7 @@ make install
 (lfs chroot) root:/sources/less-590# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf less-590
 ```
