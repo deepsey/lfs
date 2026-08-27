@@ -1551,8 +1551,10 @@ make install
 
 ```
 cd .. && rm -rf pkg-config-0.29.2
-
+```
 ---
+
+
 
 
 
