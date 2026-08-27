@@ -1822,17 +1822,16 @@ cd .. && rm -rf bison-3.8.2
 
 ---
 
-33
-### 🔷 Grep-3.7
+### 🔷 8.33. Grep-3.7
 Распаковываем Grep-3.7 и переходим в папку с пакетом
 ```
 tar xvf grep-3.7.tar.xz && cd grep-3.7
 ```
-TEXT
+Конфигурируем Grep для компиляции
 ```
 ./configure --prefix=/usr
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -1843,7 +1842,7 @@ sys     0m0.778s
 (lfs chroot) root:/sources/grep-3.7# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make -j8 check
 ```
@@ -1860,7 +1859,7 @@ Testsuite summary for GNU grep 3.7
 # ERROR: 0
 ============================================================================
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1868,7 +1867,7 @@ make install
 (lfs chroot) root:/sources/grep-3.7# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf grep-3.7
 ```
