@@ -2032,17 +2032,17 @@ make install
 cd .. && rm -rf gdbm-1.23
 ```
 ---
-37
-### 🔷 Gperf-3.1
+
+### 🔷 8.37. Gperf-3.1
 Распаковываем Gperf-3.1 и переходим в папку с пакетом
 ```
 tar xvf gperf-3.1.tar.gz && cd gperf-3.1
 ```
-TEXT
+Конфигурируем Gperf для компиляции
 ```
 ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2053,11 +2053,11 @@ sys     0m0.133s
 (lfs chroot) root:/sources/gperf-3.1# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make -j1 check
 ```
-TEXT
+Устанавливаем пакет
 ``
 make install
 ```
@@ -2065,13 +2065,12 @@ make install
 (lfs chroot) root:/sources/gperf-3.1# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf gperf-3.1
 ```
 
 ---
-
 38
 ### 🔷 Expat-2.4.6
 Распаковываем Expat-2.4.6 и переходим в папку с пакетом
