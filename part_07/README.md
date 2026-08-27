@@ -1620,18 +1620,17 @@ cd .. && rm -rf ncurses-6.3
 
 ---
 
-29
-### 🔷 Sed-4.8
+### 🔷 8.29. Sed-4.8
 
 Распаковываем Sed-4.8 и переходим в папку с пакетом
 ```
 tar xvf sed-4.8.tar.xz && cd sed-4.8
 ```
-TEXT
+Конфигурируем Ncurses для компиляции
 ```
 ./configure --prefix=/usr
 ```
-TEXT
+Компилируем пакет и генерируем HTML документацию
 ```
 time make -j8
 ```
@@ -1645,7 +1644,7 @@ sys     0m0.555s
 ```
 make html
 ```
-TEXT
+Выпрлняем следующие действия для тестирования результатов
 ```
 chown -Rv tester .
 ```
@@ -1665,7 +1664,7 @@ Testsuite summary for GNU sed 4.8
 # ERROR: 0
 ===========================================================================
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1679,7 +1678,8 @@ install -d -m755 /usr/share/doc/sed-4.8
 ```
 install -m644 doc/sed.html /usr/share/doc/sed-4.8
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
+
 ```
 cd .. && rm -rf sed-4.8
 ```
