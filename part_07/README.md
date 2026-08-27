@@ -2071,17 +2071,17 @@ cd .. && rm -rf gperf-3.1
 ```
 
 ---
-38
-### 🔷 Expat-2.4.6
+
+### 🔷 8.38. Expat-2.4.6
 Распаковываем Expat-2.4.6 и переходим в папку с пакетом
 ```
 tar xvf expat-2.4.6.tar.gz && cd expat-2.4.6
 ```
-TEXT
+Конфигурируем Expat для компиляции
 ```
 ./configure --prefix=/usr --disable-static --docdir=/usr/share/doc/expat-2.4.6
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2092,9 +2092,9 @@ sys     0m0.180s
 (lfs chroot) root:/sources/expat-2.4.6# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
-make -j8 check
+make check TESTSUITEFLAGS=-j8
 ```
 ```
 ============================================================================
@@ -2109,7 +2109,7 @@ Testsuite summary for expat 2.4.6
 # ERROR: 0
 ============================================================================
 ```
-TEXT
+Устанавливаем пакет
 ``
 make install
 ```
@@ -2117,11 +2117,11 @@ make install
 (lfs chroot) root:/sources/expat-2.4.6# echo $?
 0
 ```
-TEXT
+Устанавливаем документацию
 ```
 install -v -m644 doc/*.{html,css} /usr/share/doc/expat-2.4.6
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf expat-2.4.6
 ```
