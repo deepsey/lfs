@@ -2128,17 +2128,16 @@ cd .. && rm -rf expat-2.4.6
 
 ---
 
-39
-### 🔷 Inetutils-2.2
+### 🔷 8.39. Inetutils-2.2
 Распаковываем Inetutils-2.2 и переходим в папку с пакетом
 ```
 tar xvf inetutils-2.2.tar.xz && cd inetutils-2.2
 ```
-TEXT
+Конфигурируем Inetutils для компиляции
 ```
 ./configure --prefix=/usr --bindir=/usr/bin --localstatedir=/var --disable-logger --disable-whois --disable-rcp --disable-rexec --disable-rlogin --disable-rsh --disable-servers
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2149,9 +2148,9 @@ sys     0m1.362s
 (lfs chroot) root:/sources/inetutils-2.2# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
-make -j8 check
+make check TESTSUITEFLAGS=-j8
 ```
 ```
 ============================================================================
@@ -2166,7 +2165,7 @@ Testsuite summary for GNU inetutils 2.2
 # ERROR: 0
 ============================================================================
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -2174,17 +2173,16 @@ make install
 (lfs chroot) root:/sources/inetutils-2.2# echo $?
 0
 ```
-TEXT
+Перемещаем программу в правильную директорию
 ```
 mv -v /usr/{,s}bin/ifconfig
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf inetutils-2.2
 ```
 
 ---
-
 40
 ### 🔷 Less-590
 Распаковываем Less-590 и переходим в папку с пакетом
