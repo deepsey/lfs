@@ -1874,17 +1874,16 @@ cd .. && rm -rf grep-3.7
 
 ---
 
-34
-### 🔷 Bash-5.1.16
+### 🔷 8.34. Bash-5.1.16
 Распаковываем Bash-5.1.16 и переходим в папку с пакетом
 ```
 tar xvf bash-5.1.16.tar.gz && cd bash-5.1.16
 ```
-TEXT
+Конфигурируем Bash для компиляции
 ```
 ./configure --prefix=/usr --docdir=/usr/share/doc/bash-5.1.16 --without-bash-malloc --with-installed-readline
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -1895,11 +1894,11 @@ sys     0m1.613s
 (lfs chroot) root:/sources/bash-5.1.16# echo $?
 0
 ```
-TEXT
+Подготавливаем ользователя для проведения тестов
 ```
 chown -Rv tester .
 ```
-TEXT
+Тестируем результаты
 ```
 su -s /usr/bin/expect tester << EOF
 set timeout -1
@@ -1909,7 +1908,7 @@ lassign [wait] _ _ _ value
 exit $value
 EOF
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1917,11 +1916,11 @@ make install
 (lfs chroot) root:/sources/bash-5.1.16# echo $?
 0
 ```
-TEXT
+Запускаем заново скомпилированный bash (вместо текущего уже запущенного)
 ````
 exec /usr/bin/bash --login
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf bash-5.1.16
 ```
