@@ -1686,17 +1686,16 @@ cd .. && rm -rf sed-4.8
 
 ---
 
-30
-### 🔷 Psmisc-23.4
+### 🔷 8.30. Psmisc-23.4
 Распаковываем Psmisc-23.4 и переходим в папку с пакетом
 ```
 tar xvf psmisc-23.4.tar.xz && cd psmisc-23.4
 ```
-TEXT
+Конфигурируем Psmisc для компиляции
 ```
 ./configure --prefix=/usr
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -1707,7 +1706,7 @@ sys     0m0.126s
 (lfs chroot) root:/sources/psmisc-23.4# echo $?
 0
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -1715,13 +1714,12 @@ make install
 (lfs chroot) root:/sources/psmisc-23.4# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf psmisc-23.4
 ```
 
 ---
-
 31
 ### 🔷 Gettext-0.21
 Распаковываем Gettext-0.21 и переходим в папку с пакетом
