@@ -1487,11 +1487,11 @@ found ld-linux-x86-64.so.2 at /usr/lib/ld-linux-x86-64.so.2
 0
 ```
 Для платформы x86-64 вывод должен быть как указано выше.  
-Убедившись, что все работет корректно, очищаем тестовые файлы
+Убедившись, что все работает корректно, очищаем тестовые файлы
 ```
 rm -v dummy.c a.out dummy.log
 ```
-Перемещаем несоответсвующие файлы
+Перемещаем несоответствующие файлы
 ```
 mkdir -pv /usr/share/gdb/auto-load/usr/lib
 ```
@@ -1502,6 +1502,55 @@ mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
 ```
 cd .. && cd .. && rm -rf gcc-11.2.0
 ```
+---
+
+### 🔷 8.27. Pkg-config-0.29.2
+
+Распаковываем Pkg-config-0.29.2 и переходим в папку с пакетом
+```
+tar xvf pkg-config-0.29.2.tar.gz && cd pkg-config-0.29.2
+```
+Готовим Pkg-config для компиляции
+```
+./configure --prefix=/usr --with-internal-glib --disable-host-tool --docdir=/usr/share/doc/pkg-config-0.29.2
+```
+Компилируем пакет
+```
+time make -j8
+```
+```
+real    0m3.221s
+user    0m16.844s
+sys     0m1.603s
+(lfs chroot) root:/sources/pkg-config-0.29.2# echo $?
+0
+```
+TEXT TEST
+```
+make check
+```
+```
+===================
+All 30 tests passed
+===================
+make[2]: Leaving directory '/sources/pkg-config-0.29.2/check'
+make[1]: Leaving directory '/sources/pkg-config-0.29.2/check'
+(lfs chroot) root:/sources/pkg-config-0.29.2# echo $?
+0
+```
+Устанавливаем пакет
+```
+make install
+```
+```
+(lfs chroot) root:/sources/pkg-config-0.29.2# echo $?
+0
+```
+
+Удаляем исходные файлы пакета из source
+
+```
+cd .. && rm -rf pkg-config-0.29.2
 ---
 
 
