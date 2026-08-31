@@ -2272,17 +2272,16 @@ cd .. && rm -rf perl-5.34.0
 ```
 ---
 
-42
-### 🔷 XML::Parser-2.46
+### 🔷 8.42. XML::Parser-2.46
 Распаковываем XML::Parser-2.46 и переходим в папку с пакетом
 ```
 tar xvf XML-Parser-2.46.tar.gz && cd XML-Parser-2.46
 ```
-TEXT
+Подготавливаем XML::Parser для компиляции
 ```
 perl Makefile.PL
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2293,14 +2292,14 @@ sys     0m0.083s
 (lfs chroot) root:/sources/XML-Parser-2.46# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
 make -j8 test
 ```
 ```
 All tests successful.
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -2308,7 +2307,7 @@ make install
 (lfs chroot) root:/sources/XML-Parser-2.46# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf XML-Parser-2.46
 ```
