@@ -2219,26 +2219,25 @@ cd .. && rm -rf less-590
 
 ---
 
-41
-### 🔷 Perl-5.34.0
+### 🔷 8.41. Perl-5.34.0
 Распаковываем Perl-5.34.0 и переходим в папку с пакетом
 ```
 tar xvf perl-5.34.0.tar.xz && cd perl-5.34.0
 ```
-TEXT
+Устанавливаем патч, исправляющий проблему, на которую указывают последние версии gdbm
 ```
 patch -Np1 -i ../perl-5.34.0-upstream_fixes-1.patch
 ```
-TEXT
+В этой версии Perl теперь выполняется сборка модулей Compress::Raw::Zlib и Compress::Raw::BZip2. По умолчанию для сборки Perl использует встроенную копию исходного кода. Выполните следующую команду, чтобы Perl использовал библиотеки, установленные в системе:
 ```
 export BUILD_ZLIB=False
 export BUILD_BZIP2=0
 ```
-TEXT
+Чтобы полностью контролировать процесс настройки Perl, вы можете удалить опции «-des» из приведенной ниже команды и самостоятельно выбрать параметры сборки пакета. В качестве альтернативы можно использовать команду в точности так, как она указана ниже, чтобы применить настройки по умолчанию, которые Perl определяет автоматически:
 ```
 sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr -Dprivlib=/usr/lib/perl5/5.34/core_perl -Darchlib=/usr/lib/perl5/5.34/core_perl -Dsitelib=/usr/lib/perl5/5.34/site_perl -Dsitearch=/usr/lib/perl5/5.34/site_perl -Dvendorlib=/usr/lib/perl5/5.34/vendor_perl -Dvendorarch=/usr/lib/perl5/5.34/vendor_perl -Dman1dir=/usr/share/man/man1 -Dman3dir=/usr/share/man/man3 -Dpager="/usr/bin/less -isR" -Duseshrplib -Dusethreads
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2249,14 +2248,14 @@ sys     0m8.555s
 (lfs chroot) root:/sources/perl-5.34.0# echo $?
 0
 ```
-TEXT
+Для проверки результатов (примерно 11 SBU) выполняем команду:
 ```
 make -j8 test
 ```
 ```
 Failed 9 tests out of 2542, 99.65% okay.
 ```
-TEXT
+Устанавливаем пакет и выполняем очистку:
 ```
 make install
 ```
@@ -2267,7 +2266,7 @@ make install
 ```
 unset BUILD_ZLIB BUILD_BZIP2
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf perl-5.34.0
 ```
