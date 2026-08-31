@@ -2415,17 +2415,16 @@ cd .. && rm -rf autoconf-2.71
 ```
 ---
 
-45
-### 🔷 Automake-1.16.5
+### 🔷 8.45. Automake-1.16.5
 Распаковываем Automake-1.16.5 и переходим в папку с пакетом
 ```
 tar xvf automake-1.16.5.tar.xz && cd automake-1.16.5
 ```
-TEXT
+Конфигурируем Automake для компиляции
 ```
 ./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.5
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2436,9 +2435,9 @@ sys     0m0.068s
 (lfs chroot) root:/sources/automake-1.16.5# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
-make -j8 check
+make -j4 check
 ```
 ```
 ============================================================================
@@ -2453,7 +2452,7 @@ Testsuite summary for GNU Automake 1.16.5
 # ERROR: 0
 ============================================================================
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -2461,12 +2460,11 @@ make install
 (lfs chroot) root:/sources/automake-1.16.5# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf automake-1.16.5
 ```
 ---
-
 46
 ### 🔷 OpenSSL-3.0.12
 В книге устанавливается OpenSSL-3.0.1, но его тестирование заканчивалось с ошибками, поэтому разворачивался OpenSSL-3.0.12
