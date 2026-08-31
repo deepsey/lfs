@@ -2373,17 +2373,16 @@ cd .. && rm -rf intltool-0.51.0
 ```
 ---
 
-44
-### 🔷 Autoconf-2.71
+### 🔷 8.44. Autoconf-2.71
 Распаковываем Autoconf-2.71 и переходим в папку с пакетом
 ```
 tar xvf autoconf-2.71.tar.xz && cd autoconf-2.71
 ```
-TEXT
+Конфигурируем Autoconf для компиляции
 ```
 ./configure --prefix=/usr
 ```
-TEXT
+Компилируем пакет
 ```
 time make -j8
 ```
@@ -2394,15 +2393,15 @@ sys     0m0.067s
 (lfs chroot) root:/sources/autoconf-2.71# echo $?
 0
 ```
-TEXT
+Тестируем результаты
 ```
-make -j8 check
+make check TESTSUITEFLAGS=-j8
 ```
 ```
 543 tests behaved as expected.
 56 tests were skipped.
 ```
-TEXT
+Устанавливаем пакет
 ```
 make install
 ```
@@ -2410,7 +2409,7 @@ make install
 (lfs chroot) root:/sources/autoconf-2.71# echo $?
 0
 ```
-TEXT REMOVE
+Удаляем исходные файлы пакета из source
 ```
 cd .. && rm -rf autoconf-2.71
 ```
