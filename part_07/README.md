@@ -2250,7 +2250,7 @@ sys     0m8.555s
 ```
 Для проверки результатов (примерно 11 SBU) выполняем команду:
 ```
-make -j8 test
+make check TESTSUITEFLAGS=-j8
 ```
 ```
 Failed 9 tests out of 2542, 99.65% okay.
